@@ -11,4 +11,8 @@ Once that firmware is installed, continue to use [@jeffmer's app loader](https:/
 and "Launcher (default)".  At this point, you may see your watch say "Loading" then go dark, that's normal. Now install the files from this repo (accel.js and 
 cst716-p8.js) via the [Espurino IDE](https://espruino.com/ide). You will be overwriting the P8 files with these two
 which are customized for the X16. After that, your watch should respond to a wrist lift. I recommend loading jeffmer's "Multi Clock" so you have an app in the app loader. 
-When the screen is on (due to wrist lift), the touch screen will respond to a long press that will open the app launcher.
+When the screen is on (due to wrist lift), the touch screen will respond to a long press that will open the app launcher. 
+
+Lastly, since the screen is so dim, I've updated the settings.json to use a full brightness during daytime. Adjust to taste.
+
+
