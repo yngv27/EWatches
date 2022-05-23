@@ -14,7 +14,7 @@ Watches that can be updated OTA are: Pinetime, P8A, P8B, P22 (there are many var
 ### SWD Update
 If you're comfortable with opening the hardware, it opens up more watch possibilities for you. You won't need DaFlasher, or the in-between files for changing the SDK or bootloader, as you'll be installing the entire ecosystem in one step (bootloader, soft device and app). Watches that have been ported this way include the Bebinca-79, G5 and GW32 (each is nRF52840 round face). @jeffmer has everything you need [here](https://github.com/jeffmer/WatchApps/tree/master/firmware).
 
-### So what the heck do YOU have
+### So what the heck is actually here?
 I'm just curious what CAN run Espruino, so I've taken on some other watches to try out. What I have you'll find in the repo above. Each will have a blurb and appropriate files, and whether or not you need to open it up or use OTA.
 
 I also have some Espruino tools I use to "diagnose" newly flashed watches. If you're interested in discovering what does what, you'll find routines for checking pin states, brute forcing through pins to check I2C and SPI, etc. I'm sure they can be made better, but they do the job.
