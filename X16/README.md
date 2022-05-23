@@ -8,11 +8,12 @@ GW32, except it appears to be mounted upside down so I had to reverse Left/Right
 ## Installation
 Use the same process as a P8 (Follow @enaon's instructions [here](https://enaon.github.io/eucWatch/tools/hackme/) **up to and including step 3.** For Step 4 use [this file](https://github.com/jeffmer/WatchApps/blob/master/firmware/espruino_2v11.222_p8.zip) instead.
 Once that firmware is installed, continue to use [@jeffmer's app loader](https://jeffmer.github.io/WatchApps/) to install "boot" (twice as per instructions), "main",
-and "Launcher (default)".  At this point, you may see your watch say "Loading" then go dark, that's normal. Now install the files from this repo (accel.js and 
-cst716-p8.js) via the [Espurino IDE](https://espruino.com/ide). You will be overwriting the P8 files with these two
-which are customized for the X16. After that, your watch should respond to a wrist lift. I recommend loading jeffmer's "Multi Clock" so you have an app in the app loader. 
+and "Launcher (default)".  At this point, you may see your watch say "Loading" then go dark, that's normal. I recommend loading jeffmer's "Multi Clock" so you have a watch app in the app loader. Now install the files from this repo (accel.js and 
+cst716-p8.js) via the [Espurino IDE](https://espruino.com/ide). You will be overwriting the existing P8 files with these two
+which are customized for the X16. After that, your watch should respond to a wrist lift. 
+
 When the screen is on (due to wrist lift), the touch screen will respond to a long press that will open the app launcher. 
 
-Lastly, since the screen is so dim, I've updated the settings.json to use a full brightness during daytime. Adjust to taste.
+Lastly, since the screen is so dim, I've updated the settings.json to use a full brightness during daytime. Adjust to taste and upload that to the watch.
 
-
+You now have an Espurino powered watch. 
