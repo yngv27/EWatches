@@ -3,7 +3,7 @@ Still not sure if these are the same exact watch, will edit when I know more. [W
 
 This is a very inexpensive P8 compatible (mostly) with some different components. The screen is not as good as a P8, and there is no hardware button. The accelerometer is a BMA421
 which is supported mostly, but can be improved upon by setting up the hardware interrupt instead of polling for a "faceup" event. The touchescreen is an IT7259, same as in the
-GW32, except it appears to be mounted upside down so I had to reverse Left/Right and Up/Down and the coordinates reported.
+GW32, except it appears to be mounted upside down so I had to reverse Left/Right and Up/Down and the coordinates reported. But since we're masquerading as a P8, the driver is called "cst716-p8.js". Welcome to hacking...
 
 ## Installation
 Use the same process as a P8 (Follow @enaon's instructions [here](https://enaon.github.io/eucWatch/tools/hackme/) **up to and including step 3.** For Step 4 use [this file](https://github.com/jeffmer/WatchApps/blob/master/firmware/espruino_2v11.222_p8.zip) instead.
