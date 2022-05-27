@@ -10,6 +10,7 @@ let pins = [
 
 let plbl = '';
 function makeLabels() {
+  plbl = '';
   for(let p=0; p<pins.length; p++) {
     plbl += (' '+pins[p].toString()).slice(-3);
   }
