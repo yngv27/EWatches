@@ -32,3 +32,11 @@
 1,3 = Output
 c = input pullup
 3000c = input pullup w sense 
+
+GPIO States:
+33222222 22221111 11111100 00000000
+10987654 32109876 54321098 76543210
+________ ________ ________ ________
+00110000 01010111 11101111 11110000 =>  DIRECTION (0=in, 1=out)
+00110000 00010101 11101100 11000000 =>  OUT (OUTSET,OUTCLR). (0 = pin driver low, 1 = pin driver high)
+10000110 00001010 00010000 00001000 =>  INPUT (0 = pin input low, 1 = pin input high)
