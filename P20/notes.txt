@@ -1,3 +1,20 @@
+/*
+** D3   battery charging (charging = LOW)
+** D4   backlight (analog)
+** D15  I2C SDA (SC7A20)
+** D16  I2C SCK (SC7A20)
+** D17  SPI Flash MOSI
+** D18  SPI Flash SCLK
+** D19  SPI FLash MISO
+** D20  SPI Flash CS
+** D22  buzzer
+** D25  BTN1 (input_pullup)
+** D26  BTN1 (input_pullup)
+** D28  I2C SDA (0x48 - HRM??)
+** D29  I2C SCK (???)
+** D30  analog battery voltage (low = 2.555, high = 3.17)
+*/
+
 0x50000500: 00000000 3015ecc0 3015ecc0 3015ecc0 860a1008 3057eff0 3057eff0 3057eff0 
 0x50000520: 00001000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 
 0x50000540: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 
