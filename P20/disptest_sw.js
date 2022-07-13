@@ -1,8 +1,7 @@
-/* Copyright (c) 2020 Akos Lukacs, based on code by Gordon Williams and https://github.com/Bodmer/TFT_eSPI. See the file LICENSE for copying permission. */
-/*
-Module for the ST7789 135x240 LCD controller
+/* Based upon Espruino SPI code for the ST7789:
+Copyright (c) 2020 Akos Lukacs, based on code by Gordon Williams and https://github.com/Bodmer/TFT_eSPI. See the file LICENSE for copying permission. 
 
-Just:
+Module for the GC9A01 240x240 LCD controller
 */
 E.kickWatchdog();
 function KickWd(){
@@ -11,19 +10,23 @@ function KickWd(){
 var wdint=setInterval(KickWd,2000);
 E.enableWatchdog(15, false);
 
-/* SN80 
-SCK=D2;
-IO= D3;
-DC=D18;
-CS=D25; 
-RST=D26;
-*/
+let WATCH = process.env.BOARD; //"P20";
+
 
 SCK=D8;
 IO= D9;
 DC=D6;
 CS=D14; 
 RST=D7;
+
+if(WATCH == "SN80") {
+  SCK=D2;
+  IO= D3;
+  DC=D18;
+  CS=D25; 
+  RST=D26;
+}
+
 
 
 function delayms(ms) {
@@ -33,16 +36,16 @@ function delayms(ms) {
 
 
 function on() {
-  // P20
-  D4.set();
-  //D11.reset();
-  pinMode(D13, 'opendrain');
   // SN80
-  //digitalWrite([D23,D22,D14],0);
+  if(WATCH == "SN80") digitalWrite([D23,D22,D14],0);
+  // P20
+  else {
+    D4.set();
+  }
 }
 
 var spi = new SPI();
-spi.setup({sck:SCK,mosi:IO,baud:8000000, mode:0}); //spi.send([0xab],D5); 
+spi.setup({sck:SCK,mosi:IO,baud:8000000, mode:0}); 
 
 const LCD_WIDTH = 240;
 const LCD_HEIGHT = 240;
@@ -52,6 +55,7 @@ const ROWSTART = 0;
 nrf_wait_us = delayms;
 
 function init(spi, dc, ce, rst, callback) {
+  /*
   function cmd(c, d) {
       dc.reset();
       spi.write(c, ce);
@@ -60,26 +64,33 @@ function init(spi, dc, ce, rst, callback) {
           spi.write(d, ce);
       }
   }
+  */
   function spi_tx(cord, b) {
     if(cord) dc.set(); else dc.reset();
     spi.write(b, ce);
   }
 
   pinMode(rst, 'output');
+  rst.set();
   pinMode(dc, 'output');
+  dc.set();
   pinMode(ce, 'output');
+  ce.set();
           
+  /*
   if (rst) {
       //digitalPulse(rst, 1, [50,50,120]);
   } else {
       cmd(0x01); //Software reset
   }
+  */
   digitalWrite(rst, 1);
   nrf_wait_us(50);
   digitalWrite(rst, 0);
   nrf_wait_us(50);
   digitalWrite(rst, 1);
   nrf_wait_us(120);
+  
   spi_tx(0, 40);
   nrf_wait_us(120);
   spi_tx(0, 16);
@@ -291,6 +302,80 @@ function init(spi, dc, ce, rst, callback) {
        
 }
 
+function func1(spi, dc, ce, rst, callback) {
+  function spi_tx(cord, b) {
+    if(cord) dc.set(); else dc.reset();
+    spi.write(b, ce);
+  }
+  /*
+  spi_tx(0,0xfe);
+  spi_tx(0,0xef);
+  spi_tx(0,0x84);
+  spi_tx(1,0x40);
+  spi_tx(0,0xb6);
+  spi_tx(1,0);
+  spi_tx(1,0);
+  spi_tx(0,0x36);
+  spi_tx(1,0x48);
+  spi_tx(0,0x3a);
+  spi_tx(1,5);
+  spi_tx(0,0x66);
+  spi_tx(1,0x3c);
+  spi_tx(1,0);
+  spi_tx(1,0xcd);
+  spi_tx(1,0x67);
+  spi_tx(1,0x45);
+  spi_tx(1,0x45);
+  spi_tx(1,0x10);
+  spi_tx(1,0);
+  spi_tx(1,0);
+  spi_tx(1,0);
+  spi_tx(0,0x67);
+  spi_tx(1,0);
+  spi_tx(1,0x3c);
+  spi_tx(1,0);
+  spi_tx(1,0);
+  spi_tx(1,0);
+  //spi_tx(1);
+  spi_tx(1,0x54);
+  spi_tx(1,0x10);
+  spi_tx(1,0x32);
+  spi_tx(1,0x98);
+  */
+    spi_tx(0,0xfe);
+  spi_tx(0,0xef);
+  spi_tx(0,0x84);
+  spi_tx(1,0x40);
+  spi_tx(0,0xb6);
+  spi_tx(1,0);
+  spi_tx(1,0x40);
+  spi_tx(0,0x36);
+  spi_tx(1,0x58);
+  spi_tx(0,0x3a);
+  spi_tx(1,5);
+  spi_tx(0,0x66);
+  spi_tx(1,0x3c);
+  spi_tx(1,0);
+  spi_tx(1,0x98);
+  spi_tx(1,0x10);
+  spi_tx(1,0x32);
+  spi_tx(1,0x45);
+  //spi_tx(1);
+  spi_tx(1,0);
+  spi_tx(1,0);
+  spi_tx(1,0);
+  spi_tx(0,0x67);
+  spi_tx(1,0);
+  spi_tx(1,0x3c);
+  spi_tx(1,0);
+  spi_tx(1,0);
+  spi_tx(1,0);
+  spi_tx(1,0x10);
+  spi_tx(1,0x54);
+  spi_tx(1,0x67);
+  spi_tx(1,0x45);
+  spi_tx(1,0xcd);
+}
 
 let connect = function (spi, dc, ce, rst, callback) {
     var g = Graphics.createCallback(LCD_WIDTH, LCD_HEIGHT, 16, {
@@ -316,12 +401,42 @@ let connect = function (spi, dc, ce, rst, callback) {
         }
     });
     init(spi, dc, ce, rst, callback);
+    //setTimeout(func1, 250, spi, dc, ce, rst);
     return g;
 };
 
-/**/
+/*
+
+0x50000700: 00000002 00000002 00000002 00000000 00000003 00000003 00000003 00000003 
+0x50000720: 00000001 00000003 00000003 00000003 0003000c 00000003 00000003 00000003 
+0x50000740: 00000003 00000003 00000003 0000000c 00000003 00000002 00000003 00000002 
+0x50000760: 00000002 0003000c 0003000c 00000002 00000003 00000003 00000002 00000000 
+*/
+
+
+
+if(WATCH == "P20") {
+  pinMode(D12, "input_pullup");
+  pinMode(D19, "input_pullup");
+  pinMode(D3, "output");
+  D3.set();
+  
+  const gpio = [
+  0x00000002, 0x00000002, 0x00000002, 0x00000000, 0x00000003, 0x00000003, 0x00000003, 0x00000003, 
+  0x00000001, 0x00000003, 0x00000003, 0x00000003, 0x0003000c, 0x00000003, 0x00000003, 0x00000003, 
+  0x00000003, 0x00000003, 0x00000003, 0x0000000c, 0x00000003, 0x00000002, 0x00000003, 0x00000002, 
+  0x00000002, 0x0003000c, 0x0003000c, 0x00000002, 0x00000003, 0x00000003, 0x00000002, 0x00000000 
+  ];
+  for(let idx=0; idx < 32; idx++) {
+    //poke32(0x50000700+4*idx, gpio[idx]);
+  }
+}
+
 on();
-var g = connect(spi, DC, CS, RST, function() {
+
+var g = connect(spi, DC, CS, RST);
+
+function test () {
   //on();
   g.clear();
   //g.setRotation(1);
@@ -352,4 +467,10 @@ var g = connect(spi, DC, CS, RST, function() {
     g.drawLine(125, y, 155, y);
   }
   //g.drawImage(img,20,144);
-  });
+}
+
+function gpios() {
+  for(let idx=0; idx < 32; idx++ ) {
+    print(`${idx}: ${peek32(0x50000700+4*idx).toString(16)}`);
+  }
+}
