@@ -1,7 +1,9 @@
-/* Based upon Espruino SPI code for the ST7789:
+/* 
+Module for the GC9A01 240x240 LCD controller
+
+Based upon code for the ST7735
 Copyright (c) 2020 Akos Lukacs, based on code by Gordon Williams and https://github.com/Bodmer/TFT_eSPI. See the file LICENSE for copying permission. 
 
-Module for the GC9A01 240x240 LCD controller
 */
 E.kickWatchdog();
 function KickWd(){
@@ -10,7 +12,9 @@ function KickWd(){
 var wdint=setInterval(KickWd,2000);
 E.enableWatchdog(15, false);
 
+
 let WATCH = process.env.BOARD; //"P20";
+print(`Detected ${WATCH}`);
 
 
 SCK=D8;
@@ -25,8 +29,22 @@ if(WATCH == "SN80") {
   DC=D18;
   CS=D25; 
   RST=D26;
+} else if (WATCH == "GW32") {
+  SCK=D14;
+  IO=D15;
+  DC=D7;
+  CS=D8;
+  RST=D38;
+  // power on...
+  //D25.set();
+} else if(WATCH == "P20") {
+  let happy = [
+    //D5, D10, D11, D12, D13, D15, D16, D17, D18, D20, D28, D29
+     D14,
+    ];
+  print(`Setting ${happy[0]}`);
+  happy[0].set();
 }
-
 
 
 function delayms(ms) {
@@ -38,6 +56,7 @@ function delayms(ms) {
 function on() {
   // SN80
   if(WATCH == "SN80") digitalWrite([D23,D22,D14],0);
+  else if(WATCH == "GW32") D24.set();
   // P20
   else {
     D4.set();
