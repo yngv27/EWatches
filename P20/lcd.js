@@ -1,5 +1,8 @@
 /* 
-Module for the GC9A01 240x240 LCD controller
+Module for the GC9A01 240x240 LCD controller on a P20 smart watch (specific pin assignments)
+
+Based upon GC9A01 code for GW32, courtesy of @jeffmer
+https://github.com/jeffmer/WatchApps/blob/6f8ffacdc8163911cf09aef431bd20577efff9e2/apps/main-gw32/lcd-gw32.js
 
 Based upon code for the ST7735
 Copyright (c) 2020 Akos Lukacs, based on code by Gordon Williams and https://github.com/Bodmer/TFT_eSPI. See the file LICENSE for copying permission. 
