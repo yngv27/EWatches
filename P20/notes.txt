@@ -1,6 +1,11 @@
 /*
 ** D3   battery charging (charging = LOW)
 ** D4   backlight (analog)
+** D6   SPI Display DC
+** D7   SPI Display Reset
+** D8   SPI Display SCLK
+** D9   SPI Display MOSI (Make sure this is set for GPIO, not NFC)
+** D14  SPI Display CS
 ** D15  I2C SDA (SC7A20)
 ** D16  I2C SCK (SC7A20)
 ** D17  SPI Flash MOSI
