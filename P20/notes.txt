@@ -14,7 +14,7 @@
 ** D20  SPI Flash CS
 ** D22  buzzer
 ** D25  BTN1 (input_pullup)
-** D26  BTN1 (input_pullup)
+** D26  BTN2 (input_pullup)
 ** D28  I2C SDA (0x48 - HRM??)
 ** D29  I2C SCK (???)
 ** D30  analog battery voltage (low = 2.555, high = 3.17)
