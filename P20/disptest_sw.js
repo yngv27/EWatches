@@ -22,6 +22,12 @@ IO= D9;
 DC=D6;
 CS=D14; 
 RST=D7;
+EN=D13;
+
+function delayms(ms) {
+  //digitalPulse(D18,0,ms);digitalPulse(D18,0,0);
+  var t = getTime()+ms/1000; while(getTime()<t);
+}
 
 if(WATCH == "SN80") {
   SCK=D2;
@@ -38,19 +44,9 @@ if(WATCH == "SN80") {
   // power on...
   //D25.set();
 } else if(WATCH == "P20") {
-  let happy = [
-    //D5, D10, D11, D12, D13, D15, D16, D17, D18, D20, D28, D29
-     D14,
-    ];
-  print(`Setting ${happy[0]}`);
-  happy[0].set();
 }
 
 
-function delayms(ms) {
-  //digitalPulse(D18,0,ms);digitalPulse(D18,0,0);
-  var t = getTime()+ms/1000; while(getTime()<t);
-}
 
 
 function on() {
@@ -84,6 +80,7 @@ function init(spi, dc, ce, rst, callback) {
       }
   }
   */
+  print("It begins...");
   function spi_tx(cord, b) {
     if(cord) dc.set(); else dc.reset();
     spi.write(b, ce);
@@ -317,8 +314,8 @@ function init(spi, dc, ce, rst, callback) {
   nrf_wait_us(120);
   spi_tx(0, 44);
 
-  if (callback) setTimeout(callback, 500);
-       
+  //if (callback) setTimeout(callback, 500);
+  print("init complete");
 }
 
 function func1(spi, dc, ce, rst, callback) {
@@ -424,8 +421,7 @@ let connect = function (spi, dc, ce, rst, callback) {
     return g;
 };
 
-/*
-
+/* from original firmware:
 0x50000700: 00000002 00000002 00000002 00000000 00000003 00000003 00000003 00000003 
 0x50000720: 00000001 00000003 00000003 00000003 0003000c 00000003 00000003 00000003 
 0x50000740: 00000003 00000003 00000003 0000000c 00000003 00000002 00000003 00000002 
@@ -437,9 +433,17 @@ let connect = function (spi, dc, ce, rst, callback) {
 if(WATCH == "P20") {
   pinMode(D12, "input_pullup");
   pinMode(D19, "input_pullup");
-  pinMode(D3, "output");
-  D3.set();
+  pinMode(D13, "output");
   
+  print(`Setting ${EN}`);
+  EN.set();
+  delayms(10);
+  EN.reset();
+  delayms(120);
+  EN.set();
+  print("Bounce complete");
+
+/*  
   const gpio = [
   0x00000002, 0x00000002, 0x00000002, 0x00000000, 0x00000003, 0x00000003, 0x00000003, 0x00000003, 
   0x00000001, 0x00000003, 0x00000003, 0x00000003, 0x0003000c, 0x00000003, 0x00000003, 0x00000003, 
@@ -449,6 +453,7 @@ if(WATCH == "P20") {
   for(let idx=0; idx < 32; idx++) {
     //poke32(0x50000700+4*idx, gpio[idx]);
   }
+  */
 }
 
 on();
@@ -493,3 +498,12 @@ function gpios() {
     print(`${idx}: ${peek32(0x50000700+4*idx).toString(16)}`);
   }
 }
+/*
+NRF.disconnect();setTimeout(function() { NRF.restart(function(){
+poke32(0x4001e504,1);while(!peek32(0x4001e400)); // enable flash writing
+poke32(0x1000120c,0xfffffffe);while(!peek32(0x4001e400)); // NFC pins as GPIO
+poke32(0x4001e504, 0);while(!peek32(0x4001e400)); // disable flash writing
+}) }, 2000);
+*/
+
+
