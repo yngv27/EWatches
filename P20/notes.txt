@@ -5,6 +5,9 @@
 ** D7   SPI Display Reset
 ** D8   SPI Display SCLK
 ** D9   SPI Display MOSI (Make sure this is set for GPIO, not NFC)
+** D10  I2C SDA (CST?16)
+** D11  I2C SCK (CST?16)
+** D12  Touch screen interrupt
 ** D14  SPI Display CS
 ** D15  I2C SDA (SC7A20)
 ** D16  I2C SCK (SC7A20)
