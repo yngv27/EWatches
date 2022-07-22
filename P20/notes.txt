@@ -20,7 +20,7 @@
 ** D26  BTN2 (input_pullup)
 ** D28  I2C SDA (0x48 - HRM??)
 ** D29  I2C SCK (???)
-** D30  analog battery voltage (low = 2.555, high = 3.17)
+** D30  analog battery voltage (low = 2.56, high = 3.07)
 */
 
 0x50000500: 00000000 3015ecc0 3015ecc0 3015ecc0 860a1008 3057eff0 3057eff0 3057eff0 
