@@ -92,3 +92,19 @@ SPI2:  enabled SCK=8 MOSI=0 MISO=-1 (no MISO, so display)
 0x40023580: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 
 0x400235a0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 
 0x400235c0: 000000ff 00000001 00000000 00000000 00000000 00000000 00000000 00000000 
+
+
+Touch sensor:
+https://github.com/InfiniTimeOrg/InfiniTime/blob/develop/src/drivers/Cst816s.cpp
+https://github.com/erfanoabdi/android_kernel_gigaset_mt6768/blob/b4c976e67760ce8e61d0bc523156d7deffafa1a3/drivers/input/touchscreen/hynitron/hynitron_core.c
+https://github.com/lupyuen/hynitron_i2c_cst0xxse/blob/master/cst0xx_core.c
+https://github.com/fbiego/CST816S/blob/main/CST816S.cpp
+
+HRS = ???? on I2C D28,D29, address 0x48 (72)
+if it's a Goodix, try:
+Send command “0XC0” according to the IIC command sending protocol; delay for 1 ms and then read 2 bytes
+from the register whose address is 0x0028 according to the IIC read operation protocol; if the read-out value
+is 0x0031, the communication interface passes the verification.
+https://product.goodix.com/en/docview/GH300_Datasheet_Rev.1.3?objectId=7&objectType=document&version=69
+https://github.com/ESE-ZhangYuzhu/GH3011/blob/main/STM32F10x_FWLIB_Template/Device/GH3011/GH3011.c
+
