@@ -8,6 +8,7 @@
 ** D10  I2C SDA (CST?16)
 ** D11  I2C SCK (CST?16)
 ** D12  Touch screen interrupt
+** D13  Touch screen reset??
 ** D14  SPI Display CS
 ** D15  I2C SDA (SC7A20)
 ** D16  I2C SCK (SC7A20)
@@ -99,6 +100,7 @@ https://github.com/InfiniTimeOrg/InfiniTime/blob/develop/src/drivers/Cst816s.cpp
 https://github.com/erfanoabdi/android_kernel_gigaset_mt6768/blob/b4c976e67760ce8e61d0bc523156d7deffafa1a3/drivers/input/touchscreen/hynitron/hynitron_core.c
 https://github.com/lupyuen/hynitron_i2c_cst0xxse/blob/master/cst0xx_core.c
 https://github.com/fbiego/CST816S/blob/main/CST816S.cpp
+https://github.com/InfiniTimeOrg/InfiniTime/pull/1130/files#diff-9d9d5389cf4cc0c3064d0778c604a6c4f06329d64e4c18a54464a7cbba9682d2R61
 
 HRS = ???? on I2C D28,D29, address 0x48 (72)
 if it's a Goodix, try:
