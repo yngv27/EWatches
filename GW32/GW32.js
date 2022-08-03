@@ -77,6 +77,7 @@ if (_S.read("lcd.js")) eval(_S.read("lcd.js"));
 if (_S.read("accel.js")) eval(_S.read("accel.js"));
 // accel should be init'd
 if (_S.read("it7259.js")) eval(_S.read("it7259.js"));
+if (_S.read("touch.js")) eval(_S.read("touch.js"));
 
 
 ACCEL.on("faceup", ()=>{
