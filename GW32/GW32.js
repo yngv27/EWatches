@@ -63,9 +63,10 @@ delayms = (ms) => {
 
 wOS = {
   time_left: 0,
-  brightLevel: .75,
-  buzz: (ms) => {  D32.set(); delayms(ms); D32.reset(); },
+  brightLevel: 0.75,
+  buzz: (ms) => {  ms=ms?ms:250; D32.set(); delayms(ms); D32.reset(); },
   setLCDBrightness: (v) => { analogWrite(D24,v); },
+  isCharging: ()=>{return D22.read();},
 };
 
 if (_S.read("lcd.js")) eval(_S.read("lcd.js"));
@@ -76,7 +77,6 @@ if (_S.read("lcd.js")) eval(_S.read("lcd.js"));
 
 if (_S.read("accel.js")) eval(_S.read("accel.js"));
 // accel should be init'd
-if (_S.read("it7259.js")) eval(_S.read("it7259.js"));
 if (_S.read("touch.js")) eval(_S.read("touch.js"));
 
 
@@ -90,6 +90,8 @@ ACCEL.on("faceup", ()=>{
     TC.stop();
   }, 10000);
 });
+
+setWatch(()=>{wOS.buzz();}, D22, {repeat: true, edge: "both"});
 E.showMessage = function(msg,title) {};
 E.setTimeZone(-4);
 let batLo = 0.542, batHi = 0.721;
