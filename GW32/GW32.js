@@ -64,7 +64,7 @@ delayms = (ms) => {
 wOS = {
   time_left: 0,
   brightLevel: 0.75,
-  buzz: (ms) => {  ms=ms?ms:250; D32.set(); delayms(ms); D32.reset(); },
+  buzz: (ms) => {  ms=ms?ms:200; digitalPulse(D32, 1, ms); },
   setLCDBrightness: (v) => { analogWrite(D24,v); },
   isCharging: ()=>{return D22.read();},
 };
