@@ -109,4 +109,4 @@ from the register whose address is 0x0028 according to the IIC read operation pr
 is 0x0031, the communication interface passes the verification.
 https://product.goodix.com/en/docview/GH300_Datasheet_Rev.1.3?objectId=7&objectType=document&version=69
 https://github.com/ESE-ZhangYuzhu/GH3011/blob/main/STM32F10x_FWLIB_Template/Device/GH3011/GH3011.c
-
+https://datasheet.lcsc.com/lcsc/1811151444_Epticore-Microelectronics--Shanghai-EM7028_C91478.pdf
