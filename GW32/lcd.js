@@ -5,7 +5,7 @@ function GC9A01() {
   var XOFF = 0;
   var YOFF = 0;
   var INVERSE = 1;
-  var cmd = lcd_spi_buf.command;
+  var cmd = lcd_spi_unbuf.command;
 
   function dispinit(rst,fn) {
       function delayms(d) {var t = getTime()+d/1000; while(getTime()<t);}
@@ -83,7 +83,7 @@ function GC9A01() {
 
   function connect(options , callback) {
       var spi=options.spi, dc=options.dc, ce=options.cs, rst=options.rst;
-      var g = lcd_spi_buf.connect(options.spi, {
+      var g = lcd_spi_unbuf.connect(options.spi, {
           dc: options.dc,
           cs: options.cs,
           height: LCD_HEIGHT,
