@@ -1,5 +1,7 @@
-
 wOS={
+  BATPIN: D19,
+  BATVOLT: D31,
+  BUZZPIN: D16,
   timezone: -4,
   ON_TIME:10,
   BRIGHT:0.5,
@@ -42,7 +44,6 @@ wOS={
     wOS.brightness(0);
     TC.stop();
     wOS.emit("lcdPower",false);
-    g.flip();
     g.lcd_sleep();
   },
   bright:()=>{
@@ -63,7 +64,7 @@ wOS={
   },
   setLCDPower:(b)=>{
     if(b){
-      if(wOS.awake)wOS.time_left=wOS.ON_TIME;
+      if(wOS.awake) wOS.time_left=wOS.ON_TIME;
       else wOS.wake();
     }else wOS.sleep();
   },
@@ -78,33 +79,40 @@ wOS={
         wOS.ticker=clearInterval(wOS.ticker);
       wOS.emit("sleep",true);
       wOS.sleep();
+    } else {
+      wOS.emit("tick");
     }
   }
 };
-var wOSI2C=new I2C();
-wOSI2C.setup({scl:D7,sda:D6,bitrate:200000});
-wOS.BATPIN=D19;
-wOS.BATVOLT=D31;
-wOS.BUZZPIN=D16;
-global.Bangle=wOS;
-function watchBat(){
-  setWatch(()=>{if(!wOS.awake)wOS.wake();wOS.emit("charging",wOS.isCharging());},wOS.BATPIN,{edge:"both",repeat:true,debounce:500});}
-wOS.init();
-eval(_S.read("lcd-sn80.js"));
-var g=GC9A01();
-g.setTheme((wOS.settings.theme)?wOS.settings.theme:{fg:0xffff,bg:0,fg2:0x07ff,bg2:0,fgH:0xFFFF,bgH:0x001F,dark:true});
-wOS.bright();
-eval(_S.read("cst716-sn80.js"));
-TC.start();
-eval(_S.read("accel.js"));
-ACCEL.init();
-ACCEL.on("faceup",()=>{if(!wOS.awake)wOS.wake();});
-wOS.ticker=setInterval(wOS.tick,1000);
-wOS.POWER=wOS.isCharging();
-watchBat();
 
-E.getBattery=function(){var v=wOS.batV();v=v<3.7?3.7:v;return Math.floor((v-3.7)*200);}
-wOS.showLauncher=function(){load("launch-sn80.js");};
+wOS.init();
+
+//shared I2C for accel/touch
+wOS.I2C=new I2C();
+wOS.I2C.setup({scl:D7,sda:D6,bitrate:200000});
+
+setWatch(()=>{
+  if(!wOS.awake)wOS.wake();
+  wOS.emit("charging",wOS.isCharging());
+},wOS.BATPIN,{edge:"both",repeat:true,debounce:500});
+
+eval(_S.read("lcd.js"));
+
+wOS.bright();
+eval(_S.read("touch.js"));
+TC.init(wOS.I2C, { "RESET": D10, "INTPIN": D28});
+TC.start();
+
+eval(_S.read("accel.js"));
+ACCEL.init(wOS.I2C, {"INTPIN": D8});
+ACCEL.on("faceup",()=>{if(!wOS.awake)wOS.wake();});
+
+wOS.ticker=setInterval(wOS.tick,1000);
+
+E.getBattery=function(){
+  var v=wOS.batV();v=v<3.7?3.7:v;return Math.floor((v-3.7)*200);
+};
+//wOS.showLauncher=function(){load("launch-sn80.js");};
 //eval(_S.read("menu-sn80.js"));
 //eval(_S.read("prompt-sn80.js"));
 //eval(_S.read("widgets-sn80.js"));
@@ -112,4 +120,4 @@ wOS.btnWatches=[
   setWatch(function(){if(wOS.awake)wOS.showLauncher();else wOS.wake();},BTN1,{repeat:1,edge:"falling"}),
 ];
 
-STOR=_S;
+global.Bangle=wOS;
