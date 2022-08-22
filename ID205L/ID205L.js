@@ -26,32 +26,29 @@ wOS={
    s = {
      lowbright:0.3,
       nightbright: 0.1,
-      daystart:7,
-      lowstart:19,
-      nightstart:23
     };
     //wOS.STEPS=(typeof s.steps !='undefined')?s.steps:false;
     wOS.settings=s;
-    E.setTimeZone(wOS.timezone);},
+    E.setTimeZone(wOS.timezone);
+  },
   sleep:()=>{
     TC.disable();
     wOS.emit("lcdPower",false);
     wOS.setLCDBrightness(0);
     g.lcd_sleep();
+    D22.reset(); // special?
     ACCEL.enable();
     wOS.awake = false;
   },
-
   bright:()=>{
     var hrs=Date().getHours();
-    var ds=wOS.settings.daystart;
-    var ls=wOS.settings.lowstart;
-    var ns=wOS.settings.nightstart;
+    let ds=7,ls=19,ns=22;
     var b=(hrs >= ds && hrs<ls)?wOS.BRIGHT:(hrs >= ls && hrs<ns)?wOS.settings.lowbright:wOS.settings.nightbright;
     wOS.setLCDBrightness(b);
   },
   wake: ()=> {
     if(TC) TC.enable();
+    D22.set();// special?
     ACCEL.disable();
     g.lcd_wake();
     wOS.emit("wake");
@@ -116,6 +113,7 @@ let TC = require("touch.js")({
   reset: D24,
   int: D44,
 });
+TC.disable();
 
 
 if (_S.read("accel.js")) eval(_S.read("accel.js"));
