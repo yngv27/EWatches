@@ -5,4 +5,7 @@ This is very much WIP. Massive work was already done by @kvasdopil, so a big tha
 So far, this is based upon the regular Espruino build stream, no custom code. @kvasdopil made a fast LCD driver using EasyDMA, but his build is quite old
 so I'm trying to get it more in line with modern Espruino. 
 
-WIP. more to come.
+### My work here is done
+Not sure if it's just this watch, or me, or the entire line... but I'm getting spontaneous reboots, spontaneous buzzer going off, and an SPI flash that has put up a shield around itself that won't let me mess with it. So, the build stands with no external flash. 
+
+I do not recommend this watch to anyone. It is cursed.
