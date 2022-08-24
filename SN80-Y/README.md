@@ -1,7 +1,9 @@
 Not the same as the SN80. Same exact case, different board.  Here's what I know so far:
 ```
-D5:  Touch panel
-D6:  Touch panel
+D3:  Touch panel SCL
+D4:  Touch panel SDA
+D5:  Touch panel INT
+D6:  Touch panel RESET
 D7:  Backlight (analog 0.0-0.1)
 
 D8:  on LCD socket
