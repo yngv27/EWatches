@@ -1,6 +1,7 @@
 /*
 ** D3   battery charging (charging = LOW)
 ** D4   backlight (analog)
+** D5   SC7A20 INT1
 ** D6   SPI Display DC
 ** D7   SPI Display Reset
 ** D8   SPI Display SCLK
