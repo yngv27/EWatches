@@ -6,6 +6,6 @@ So far, this is based upon the regular Espruino build stream, no custom code. @k
 so I'm trying to get it more in line with modern Espruino. 
 
 ### My work here is done
-Not sure if it's just this watch, or me, or the entire line... but I'm getting spontaneous reboots, --spontaneous buzzer going off-- (fixed: need to pull buzzer low on startup, else it feeds off nearby pins), and an SPI flash that has put up a shield around itself that won't let me mess with it. So, the build stands with no external flash. 
+Not sure if it's just this watch, or me, or the entire line... but I'm getting spontaneous reboots, ~~spontaneous buzzer going off~~ (fixed: need to pull buzzer low on startup, else it feeds off nearby pins), and an SPI flash that has put up a shield around itself that won't let me mess with it. So, the build stands with no external flash. 
 
 I do not recommend this watch to anyone, unless you're an EE who is looking for a challenge.
