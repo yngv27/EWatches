@@ -17,24 +17,7 @@ D28: Battery voltage (low=. high =)
     SPI1.setup({sck:D2, mosi:D3, baud: 8000000});
     return connect({spi:SPI1, dc:D18, cs:D25, rst:D26});
     */
-let pins = [
-  // SN80
-  //D2, D25, D3, D18, D26
-  // SN80Y
-/*
-  D11, D12, D13, D14, D8, 
-  D17, D20,  
-  */
-  D11, D12, D13, D14
-  ];
 
-let pinBusy = [];
-
-function resetBusy() {
-  for(let i = 0; i< pins.length; i++) {
-    pinBusy[i] = false;
-  }
-}
 var tmp = "";
 function delayms(ms) {
   //digitalPulse(D18,0,ms);digitalPulse(D18,0,0);
@@ -74,7 +57,7 @@ function init(spi, dc, ce, en, rst, callback) {
     function delayms(d) {var t = getTime()+d/1000; while(getTime()<t);}
     if (en) en.set();
     if (rst) {
-        digitalPulse(rst,0,[20]);
+        digitalPulse(rst,0,[20,50]);
     } else {
         cmd(0x01); 
     }
@@ -173,13 +156,22 @@ connect = function (spi, dc, ce, en, rst, callback) {
     init(spi, dc, ce, en, rst, callback);
     return g;
 };
-
+/*
+D7:  Backlight (analog 0.0-0.1)
+D8:  LCD RST, (must toggle 0->1->0) also toggles power? 
+D11: LCD DC
+D12: on LCD socket (?)
+D13: LCD CS
+D14: LCD Enable (must be high; resetting requires re-init of LCD)
+D17: Shared LCD / SPI Flash SI / Accel
+D20: Shared LCD / SPI Flash CLK / Accel
+*/
     
 function on() {
   // SN80Y
   D7.set();
 }
-// GC9A01(D25, D3, D2, D18, D26);
+// g = GC9A01(D13, D17, D20, D11, D14, D8);
 function GC9A01(CS, SI, CLK, DC, EN, RST) {
   //SN80
   //if(CLK == D3) {
@@ -193,7 +185,7 @@ function GC9A01(CS, SI, CLK, DC, EN, RST) {
   on();
   //D12.write(0); D8.write(0);
   var g = connect(spi, DC, CS, EN, RST, function() {
-    var STMP = stamp();
+    var STMP = "HI THERE";
     print(`-- ${STMP} -- CS: ${CS} SI: ${SI} CLK:${CLK} DC:${DC} EN:${EN} RST:${RST}`);
     g.setFont("6x8",4).setColor("#00ffff");//.fillRect(80,80,160,100);
     g.setFontAlign(0,0).drawString(STMP,120,120,true);
