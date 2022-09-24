@@ -3,7 +3,8 @@ It is an NRF52840 with the usual smart watch sensors (accelerometer, touchscreen
 
 I've just started working on it. Here's the (Espruino) pinouts I know:
 
-|PIN|Purpose|
+| Pin No.  | Description |
+| ------------- | ------------- |
 |D3| analog battery (hi = 0.23, lo = ???)|
 |D8|  backlight (0 == on, 1 == off, accepts analogWrite)|
 |D20| buzzer (1 == on, 0 == off, accepts analogWrite)|
