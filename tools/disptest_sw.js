@@ -208,54 +208,54 @@ function test() {
   resetBusy();
   CS = getNextPin(CS);
   pinBusy[CS] = true;
-  //SI = getNextPin(SI);
-  //pinBusy[SI] = true;
-  //CLK = getNextPin(CLK);
-  //pinBusy[CLK] = true;
+  SI = getNextPin(SI);
+  pinBusy[SI] = true;
+  CLK = getNextPin(CLK);
+  pinBusy[CLK] = true;
   EN = getNextPin(EN);
   pinBusy[EN] = true;
   DC = getNextPin(DC);
   pinBusy[DC] = true;
-  //RST = getNextPin(RST);
+  RST = getNextPin(RST);
   
-//  print(`CS=${CS}, SI=${SI}, CLK=${CLK}, DC=${DC}, EN=${EN}, RST=${RST} `);
-//  GC9A01(pins[CS], pins[SI], pins[CLK], pins[DC], pins[EN], pins[RST]);
-  print(`CS=${CS},  DC=${DC}, EN=${EN}, `);
-  GC9A01(pins[CS], D17, D20, pins[DC], pins[EN], D8);
+  print(`CS=${CS}, SI=${SI}, CLK=${CLK}, EN=${EN}, DC=${DC}, RST=${RST} `);
+  GC9A01(pins[CS], pins[SI], pins[CLK], pins[DC], pins[EN], pins[RST]);
 
-  //RST=getNextPin(++RST);
-  //if(RST == -1) {
+  RST=getNextPin(++RST);
+  if(RST == -1) {
     pinBusy[DC++]=false;
     DC=getNextPin(DC);
     if(DC == -1) {
       pinBusy[EN++]=false;
       EN=getNextPin(EN);
       if(EN == -1) {
-        //pinBusy[CLK++]=false;
-        //CLK=getNextPin(CLK);
-        //if(CLK == -1) {
-          //pinBusy[SI++]=false;
-          //SI=getNextPin(SI);
-          //if(SI == -1) {
+        pinBusy[CLK++]=false;
+        CLK=getNextPin(CLK);
+        if(CLK == -1) {
+          pinBusy[SI++]=false;
+          SI=getNextPin(SI);
+          if(SI == -1) {
             CS++;
             if(CS >= pins.length) {
               print("DONE");
               if(tik) clearInterval(tik);
               return;
             }
-            //SI=0;
-          //}
-          //CLK=0;
-        //}
+            SI=0;
+          }
+          CLK=0;
+        }
         EN=0;
       }
       DC=0;
     }
-    //RST=0;
-  //}
+    RST=0;
+  }
 }
 
+// autorun
 //tik=setInterval(test, 5000);
+// shortcut for the command window to stop the process
 ci = ()=>{clearInterval(tik);};
 
-// g=GC9A01(D13, D17, D20, D11, D14, D8)
+
