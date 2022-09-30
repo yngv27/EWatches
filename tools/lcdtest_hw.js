@@ -7,22 +7,6 @@ E.enableWatchdog(15, false);
 
 const logD = console.log;
 
-/*
-** D3   battery charging (charging = LOW)
-** D4   backlight (analog)
-** D15  I2C SDA (SC7A20)
-** D16  I2C SCK (SC7A20)
-** D17  SPI Flash MOSI
-** D18  SPI Flash SCLK
-** D19  SPI FLash MISO
-** D20  SPI Flash CS
-** D22  buzzer
-** D25  BTN1 (input_pullup)
-** D26  BTN2 (input_pullup)
-** D28  I2C SDA (0x48 - HRM??)
-** D29  I2C SCK (???)
-** D30  analog battery voltage (low = 2.555, high = 3.17)
-*/
 let Xpins = [
     D0, D1, 
     D2, D5, 
