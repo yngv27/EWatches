@@ -20,7 +20,7 @@ I've just started working on it. Here's the (Espruino) pinouts I know:
 NOTES
 =====
 Pins discovered on LCD connector:
-Inside row:  D4, D5, D6, D9
+Inside row:  D4, D5, D6, D9, D27, D26
 Outside row: 
 D11 - sometimes
 
