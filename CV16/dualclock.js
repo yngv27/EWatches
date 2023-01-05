@@ -121,8 +121,8 @@ function setDigitRaw(idx, val, icon) {
 function clock() {
   g.setColor(.45,.45,.6).fillRect(0,0,239,239);
   let h = Date().getHours(), m = Date().getMinutes();
-  g.drawImage(_S.read("minHand2"), 120, 120, {rotate: Math.PI * m / 30});
-  g.drawImage(_S.read("hrHand2"), 120, 120, {rotate: Math.PI * (h * 60 + m) / 360});
+  //g.drawImage(_S.read("minHand2"), 120, 120, {rotate: Math.PI * m / 30});
+  //g.drawImage(_S.read("hrHand2"), 120, 120, {rotate: Math.PI * (h * 60 + m) / 360});
   setDigit(5, Math.floor(h/10));
   setDigit(6, h%10, true);
   setDigit(7, Math.floor(m/10), true);
@@ -133,4 +133,10 @@ function clock() {
   setDigit(4, b%10);
 }
 
-
+lcdInit();
+setEverything('             ');
+setDigitRaw(0, 0x5450);  //b
+setDigitRaw(1, 0x5050);  //a
+setDigitRaw(2, 0x5440);  //t
+let clkint=setInterval(clock, 60000);
+clock();
