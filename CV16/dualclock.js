@@ -21,6 +21,18 @@ NRF.requestDevice( {filters: [{ namePrefix: TGT }] }).then(function(dev) {
 });
 */
 
+/*
+                0x01
+               ======
+  0x04  ||           || 0x04
+        ||           ||
+          ======
+        || 0x10      ||
+  0x40  ||           || 0x10
+               ======
+                0x40
+*/
+
 function delay(ms) {
   let t = Math.floor(Date().getTime())+ms;
   while(t > Date().getTime()) {
@@ -111,13 +123,14 @@ function setDigit(idx, val, icon) {
 
 function setDigitRaw(idx, val, icon) {
   send(0,0xb0);
-  send(0,0x10);
+  send(0, 0x10 + (idx >> 3));
+  send(0, (idx % 8) * 2);
   // offset into array
-  send(0,idx*2);
   send(0x40, ((val >> 8) + (icon ? 1 : 0)) & 0xff);
   send(0x40, val & 0xff);
 }
 
+let min10 = 0; // keep track of digit 7 for flashing the colon
 function clock() {
   g.setColor(.45,.45,.6).fillRect(0,0,239,239);
   let h = Date().getHours(), m = Date().getMinutes();
@@ -125,7 +138,8 @@ function clock() {
   //g.drawImage(_S.read("hrHand2"), 120, 120, {rotate: Math.PI * (h * 60 + m) / 360});
   setDigit(5, Math.floor(h/10));
   setDigit(6, h%10, true);
-  setDigit(7, Math.floor(m/10), true);
+  min10 = Math.floor(m/10);
+  setDigit(7, min10, true);
   setDigit(8, m%10);
   // battery
   let b = E.getBattery();
@@ -133,10 +147,28 @@ function clock() {
   setDigit(4, b%10);
 }
 
+function date() {
+  // cool date (JA)
+  setDigitRaw(9, 0x54);
+  setDigitRaw(10, 0x5415);
+  let dt = Date().getDate();
+  setDigit(11, Math.floor(dt/10), false);
+  setDigit(12, dt%10);
+}
+
 lcdInit();
 setEverything('             ');
 setDigitRaw(0, 0x5450);  //b
 setDigitRaw(1, 0x5050);  //a
 setDigitRaw(2, 0x5440);  //t
+
 let clkint=setInterval(clock, 60000);
 clock();
+date();
+
+// try this
+setInterval(()=>{
+    setDigit(7, min10, (Date().getSeconds() % 2) ? false : true);
+}, 1000);
+
+setWatch(wOS.wake, BTN2, {repeat: true, edge: "rising"});
