@@ -1,4 +1,3 @@
-
 global.wOS = {
   BATPIN: D19,
   BATLVL: D31,
@@ -30,7 +29,7 @@ global.wOS = {
   brightness: (v) => {
     v = Math.round(v/0.125);
     v = v>7?7:v<0?0:v;
-    v=v>7?1:v;	
+    v=v>7?1:v;
     digitalWrite([D23,D22,D14],7-v);
   },
 
@@ -88,12 +87,12 @@ setWatch(()=>{
 eval(_S.read("st7789.js"));
 var g = ST7789();
 
-/*
-eval(_S.read("bma421.js"));
+
+ACCEL = require("bma421.js").connect(wOS.I2C);
 ACCEL.init();
-ACCEL.on("faceup",()=>{if (!wOS.awake) wOS.wake();});
+//ACCEL.on("faceup",()=>{if (!wOS.awake) wOS.wake();});
 //console.log("loaded accel");
-*/
+
 wOS.ticker = setInterval(wOS.tick,1000);
 
 setWatch(() =>{
@@ -106,6 +105,7 @@ E.getBattery = function (){
     return Math.floor(Math.min((analogRead(wOS.BATLVL)-0.5) * 1000), 100);
 };
 E.setTimeZone(-5);
+wOS.getStepCount = ()=>{ return ACCEL.getSteps();};
 
 wOS.showLauncher = function(){
   //load("launch.js");
