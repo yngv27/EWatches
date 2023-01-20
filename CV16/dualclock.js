@@ -1,5 +1,6 @@
 
-// for use with setDigitRaw()
+// calibrate
+
 /*
                 0x01
                ======
@@ -123,13 +124,19 @@ function clock() {
   setDigit(8, m%10);
   // battery
   if(!inMsg) {
-    let b = E.getBattery();
-    setDigit(1, Math.floor(b/10), true);
-    setDigit(2, b%10);
+    // even/odd minute: draw battery or step count
+    let b = wOS.getStepCount();
+    let icon = true;
+    if(m % 2) {
+      b = E.getBattery();
+      icon = false;
+    }
+    setEverything(("     "+b.toString()).slice(-5),icon);
   }
+  if(!h && !m) drawDate();
 }
 
-function date() {
+function drawDate() {
   // cool date (JA)
   setDigitRaw(9, 0x54);
   setDigitRaw(10, 0x5415);
@@ -148,7 +155,7 @@ setDigitRaw(2, 0x5440);  //t
 
 let clkint=setInterval(clock, 60000);
 clock();
-date();
+drawDate();
 
 // try this
 setInterval(()=>{
