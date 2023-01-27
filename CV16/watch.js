@@ -1,26 +1,31 @@
+//exports = {};
+if(typeof(LCD)==="undefined")   
+    var LCD=require("seglcd.js").init({EN:D15, RST:D30, i2c:wOS.I2C});
 
-let LCD=require("seglcd.js").init({EN:D15, RST:D30, i2c:wOS.I2C});
+let _C = {
+    min10: 0, // keep track of digit 7 for flashing the colon
+    tikint: 0,
+    clkint: 0,
+    inMsg: false,
+};
 
-let inMsg = false;
-
-let min10 = 0; // keep track of digit 7 for flashing the colon
 function clock() {
   let h = Date().getHours(), m = Date().getMinutes();
   //g.drawImage(_S.read("minHand2"), 120, 120, {rotate: Math.PI * m / 30});
   //g.drawImage(_S.read("hrHand2"), 120, 120, {rotate: Math.PI * (h * 60 + m) / 360});
   LCD.setDigit(5, Math.floor(h/10));
   LCD.setDigit(6, h%10, true);
-  min10 = Math.floor(m/10);
-  LCD.setDigit(7, min10, true);
+  _C.min10 = Math.floor(m/10);
+  LCD.setDigit(7, _C.min10, true);
   LCD.setDigit(8, m%10);
   // battery
-  if(!inMsg) {
+  if(!_C.inMsg) {
     // even/odd minute: draw battery or step count
     if(m % 2) {
       s = E.getBattery().toString();
       LCD.setDigitRaw(0, 0x5450);  //b
-      LCD.setDigitRaw(1, 0x5440);  //t
-      LCD.setDigitRaw(2, 0);
+      LCD.setDigitRaw(1, 0x5050);  //a
+      LCD.setDigitRaw(2, 0x5440);  //t
       LCD.setDigit(3, Math.floor(s/10));
       LCD.setDigit(4, s%10);
       icon = false;
@@ -44,21 +49,6 @@ function drawDate() {
   LCD.setDigit(12, dt%10);
 }
 
-LCD.setEverything('?????????????');
-/*
-setDigitRaw(0, 0x5450);  //b
-setDigitRaw(1, 0x5050);  //a
-setDigitRaw(2, 0x5440);  //t
-*/
-
-let clkint=setInterval(clock, 60000);
-clock();
-drawDate();
-
-// try this
-setInterval(()=>{
-  LCD.setDigit(7, min10, (Date().getSeconds() % 2) ? false : true);
-}, 1000);
 
 let drawBkgd = () => {
   g.setColor(.4,.6,.4).fillRect(0,0,239,239);
@@ -66,24 +56,18 @@ let drawBkgd = () => {
   //setDigitRaw(3, 0x55);  //]
 };
 
-setWatch(()=>{
-  if(!wOS.awake) wOS.wake();
-  else {
-    drawBkgd();
-    inMsg = false;
-  }
-}, BTN2, {repeat: true, edge: "rising"});
 
 require("FontDylex7x13").add(Graphics);
 g.setFont("Dylex7x13",2).setFontAlign(0,0);
 
 function showMsg(m) {
   LCD.setEverything('?????'); // clear the bottom field of 5
-  g.setColor(0);
-  m.split('|').forEach((s,i)=>{g.drawString(s,120, 178+i*20);});
+  g.setBgColor(1,1,1).setColor(0);
+  m.split('|').forEach((s,i)=>{g.drawString(s,120, 178+i*20, true);});
   [400,800,1200,2000,2400].forEach((t) => {setTimeout(Bangle.buzz, t, 175);});
-  inMsg = true;
+  _C.inMsg = true;
 }
+
 let alarmTOs = [];
 let schAls = (als) => {
   for(let idx=0; idx < alarmTOs.length; idx++) {
@@ -102,5 +86,29 @@ let schAls = (als) => {
       //logD('tossing out' + idx);
     }
   }
+};
+
+exports.start = () => {
+  LCD.setEverything('?????????????');
+  _C.clkint=setInterval(clock, 60000);
+  clock();
+  drawDate();
+
+  _C.tikint = setInterval(()=>{
+    LCD.setDigit(7, _C.min10, (Date().getSeconds() % 2) ? false : true);
+  }, 1000);
+};
+
+exports.stop = () => {
+    if(_C.clkint) clearInterval(_C.clkint);
+    if(_C.tikint) clearInterval(_C.tikint);
+};
+
+exports.click = () => {   
+    if(!wOS.awake) wOS.wake();
+    else {
+        drawBkgd();
+        _C.inMsg = false;
+    }
 };
 

@@ -4,7 +4,7 @@
 function BMA421(_i2c) {
   this.i2c = _i2c;
   this.enabled = (this.checkstatus()==1);
-  if (!this.enabled) this.initialise();
+  if (!this.enabled) this.init();
 }
 BMA421.prototype.init = function() {
 //reset sensor

@@ -105,7 +105,8 @@ E.getBattery = function (){
     return Math.floor(Math.min((analogRead(wOS.BATLVL)-0.5) * 1000), 100);
 };
 E.setTimeZone(-5);
-wOS.getStepCount = ()=>{ return ACCEL.getSteps();};
+wOS.getStepCount = ()=>{ return ACCEL.getSteps(); };
+wOS.resetStepCounter = () => { ACCEL.resetSteps(); }
 
 wOS.showLauncher = function(){
   //load("launch.js");
