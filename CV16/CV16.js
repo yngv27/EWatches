@@ -102,11 +102,12 @@ setWatch(() =>{
 },BTN1,{repeat:true,edge:"rising"});
 
 E.getBattery = function (){
-    return Math.floor(Math.min((analogRead(wOS.BATLVL)-0.5) * 1000), 100);
+  // lo = .52 hi = .59
+    return Math.floor((analogRead(wOS.BATLVL)-0.52)*1428);
 };
 E.setTimeZone(-5);
 wOS.getStepCount = ()=>{ return ACCEL.getSteps(); };
-wOS.resetStepCounter = () => { ACCEL.resetSteps(); }
+wOS.resetStepCounter = () => { ACCEL.resetSteps(); }; 
 
 wOS.showLauncher = function(){
   //load("launch.js");
