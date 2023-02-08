@@ -61,6 +61,7 @@ function ST7789() {
         var g = lcd_spi_unbuf.connect(options.spi, {
             dc: options.dc,
             cs: options.cs,
+            flashcs: options.flashcs,
             height: LCD_HEIGHT,
             width: LCD_WIDTH,
             colstart: XOFF,
@@ -75,5 +76,5 @@ function ST7789() {
     //var spi = new SPI();
     SPI1.setup({sck:D2, mosi:D3, baud: 8000000});
 
-    return connect({spi:SPI1, dc:D18, cs:D25, rst:D26});
+    return connect({spi:SPI1, dc:D18, cs:D25, rst:D26, flashcs: D5});
 }

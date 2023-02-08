@@ -22,12 +22,16 @@ function clock() {
   if(!_C.inMsg) {
     // even/odd minute: draw battery or step count
     if(m % 2) {
+        /*
       s = E.getBattery().toString();
       LCD.setDigitRaw(0, 0x5450);  //b
       LCD.setDigitRaw(1, 0x5050);  //a
       LCD.setDigitRaw(2, 0x5440);  //t
       LCD.setDigit(3, Math.floor(s/10));
       LCD.setDigit(4, s%10);
+      */
+     let s = "<"+Math.floor(analogRead(D31)*10000).toString();
+     LCD.setEverything(s);
       icon = false;
     } else {
       let s = wOS.getStepCount().toString();
@@ -42,8 +46,10 @@ function clock() {
 
 function drawDate() {
   // cool date (JA)
-  LCD.setDigitRaw(9, 0x54);
-  LCD.setDigitRaw(10, 0x5415);
+  //LCD.setDigitRaw(9, 0x54);
+  //LCD.setDigitRaw(10, 0x5415);
+  LCD.setDigitRaw(9, 0x5401);
+  LCD.setDigitRaw(10, 0x5441);
   let dt = Date().getDate();
   LCD.setDigit(11, Math.floor(dt/10), false);
   LCD.setDigit(12, dt%10);
