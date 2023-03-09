@@ -9,6 +9,9 @@ let _C = {
     inMsg: false,
 };
 
+function drawBkgd() {
+  g.setBgColor(0).clear();
+}
 function clock() {
   let h = Date().getHours(), m = Date().getMinutes();
   //g.drawImage(_S.read("minHand2"), 120, 120, {rotate: Math.PI * m / 30});
@@ -48,20 +51,15 @@ function drawDate() {
   // cool date (JA)
   //LCD.setDigitRaw(9, 0x54);
   //LCD.setDigitRaw(10, 0x5415);
-  LCD.setDigitRaw(9, 0x5401);
-  LCD.setDigitRaw(10, 0x5441);
+  //LCD.setDigitRaw(9, 0x5401);
+  //LCD.setDigitRaw(10, 0x5441);
+  // crappy "M"
+  LCD.setDigitRaw(9, 0x4405);
+  LCD.setDigitRaw(10, 0x0415);
   let dt = Date().getDate();
   LCD.setDigit(11, Math.floor(dt/10), false);
   LCD.setDigit(12, dt%10);
 }
-
-
-let drawBkgd = () => {
-  g.setColor(.4,.6,.4).fillRect(0,0,239,239);
-  //setDigitRaw(0, 0x4441);  //[
-  //setDigitRaw(3, 0x55);  //]
-};
-
 
 require("FontDylex7x13").add(Graphics);
 g.setFont("Dylex7x13",2).setFontAlign(0,0);
@@ -74,25 +72,7 @@ function showMsg(m) {
   _C.inMsg = true;
 }
 
-let alarmTOs = [];
-let schAls = (als) => {
-  for(let idx=0; idx < alarmTOs.length; idx++) {
-    clearTimeout(alarmTOs[idx]);
-  }
-  alarmTOs = [];
-  for(let idx=0; idx < als.length; idx++) {
-    //logD('idx = '+idx);
-    let tdiff = Date.parse(als[idx].time) - Date.now();
-    let msg = als[idx].msg;
-    if(tdiff > 0) {
-      //logD(`will alarm ${msg} in ${tdiff}`);
-      alarmTOs.push(setTimeout(showMsg, tdiff,als[idx].msg));
-    } else {
-      //expired
-      //logD('tossing out' + idx);
-    }
-  }
-};
+exports.showMsg = (m) => showMsg(m);
 
 exports.start = () => {
   LCD.setEverything('?????????????');
