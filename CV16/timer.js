@@ -41,6 +41,11 @@ function display() {
     LCD.setDigit(7, es10, true);
     LCD.setDigit(8, esec%10);
     setTimeout((d)=>{LCD.setDigit(7, d, false);},500,es10);
+    if(_C.elapsed % 600 == 0) {
+        [10,250].forEach((t) => {setTimeout(Bangle.buzz, t, 125);});
+    } else if(_C.elapsed % 300 == 0) {
+        Bangle.buzz(250);
+    }
 }
 
 
