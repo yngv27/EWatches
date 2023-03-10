@@ -10,7 +10,7 @@ let _C = {
 };
 
 function drawBkgd() {
-  g.setBgColor(0).clear();
+  g.setBgColor(0.5,0.5,0.5).clear();
 }
 function clock() {
   let h = Date().getHours(), m = Date().getMinutes();
@@ -66,8 +66,8 @@ g.setFont("Dylex7x13",2).setFontAlign(0,0);
 
 function showMsg(m) {
   LCD.setEverything('?????'); // clear the bottom field of 5
-  g.setBgColor(1,1,1).setColor(0);
-  m.split('|').forEach((s,i)=>{g.drawString(s,120, 178+i*20, true);});
+  g.setColor(0.75,0.75,1).fillRect(0, 165, 239, 239).setColor(0);
+  m.split('|').forEach((s,i)=>{g.drawString(s,120, 178+i*20, false);});
   [400,800,1200,2000,2400].forEach((t) => {setTimeout(Bangle.buzz, t, 175);});
   _C.inMsg = true;
 }
@@ -76,6 +76,7 @@ exports.showMsg = (m) => showMsg(m);
 
 exports.start = () => {
   LCD.setEverything('?????????????');
+  drawBkgd();
   _C.clkint=setInterval(clock, 60000);
   clock();
   drawDate();
