@@ -1,6 +1,8 @@
 /*
 eval(_S.read("apw.js"))
 */
+E.setTimeZone(-4);
+
 let font = atob("AAAAAAAAB/QAAcAAAHAAAAKAPgCgD4AoAAAZgWQf8E0DMAAAQwUwKwC0A1AygwgAAM4LmE5BnAGwAAcAAAB8DjhAQAAQEOOB8AAAqAOAHAFQAAAQAIAfACABAAAABoA4AACABAAgAQAAAAYAMAAAHAeB4AAAP4MWERDRg/gAAIAP+AAAAAhwxoRkNiDhAAAggwYRENmDeAAAHAOgMQP+AEAAB4gkYSEJmEeAAA/g2YSEJmAeAABAAg4RwLgHAAAA3g2YRENmDeAAA8AzIQkM2D+AAAAAMwGYAAAAAzQZwAAAAAgA4A2AxgQQAABQAoAUAKAAAIIGMBsAcAEAAAIAMAEdDYA4AAAHwGMGDCchbQooXkEYDEA8AAAB4HwOIB0AOABwAAf8IiERCYg8wDwAAH8GDCAhAQwYIIAAH/CAhAQwIMMD8AAD/hEQiIREICAAD/hEAiARAIAAAB/BgwgIREMmCeAAB/wCABAAgAQD/gAAAAf8AAAAABAAwAIf4AAH/AYAeAZgYYIGAAD/gAQAIAEACAAD/gwAGABwBgDAD/gAA/4MABgAYADB/wAAP4MGEBCAhgwfwAAP+EICEBCAzAPAAAD+DBhBQg4YMH+AAAAB/wjARwIsGzBwgAAYQWMJiGbBHAAAgAQAP+EACAAAA/wAMACADADB/wAAeAB4AHAOAcA4AAAPAA4AHgeADAAcB4HgAABgwYwDgBwDGDBgAA4AHAA+AwBwBgAAAQcIaEZCYhYQ4IAAP+EBAAB4AHAA8AAEBD/gAAIAMAMAGABgAQAAAAEACABAAgAQAIAAMADAAAADgLYFEDiA/AAB/wEIGEDGA+AAAPgMYEEDGAiAAAPgMYGEBCH/AAAPgNYEkDSA4AAAIAf4aAIAAAAfAY0ISEbD/AAD/gMAMAGAB+AAC/gAAACADL/AAD/gGAHgGYCGAAD/gAAP4GACAA/AwAQAH4AAD+AgAwAYAH4AAB8BjAggYwHwAAD/hCAhgYwHwAAB8BjAhgQgP+AAD+AwAwAAAGIFkCaBGAAAQA/wEMAAB+ABgAwAQH8AABwAOABwDgHAAABwAOABwDgAcA4BwAAAYwGwBwBsBjAAAfgAaAJANh/gAARwJoFkDiAAAIA7ggIAAP+AACAg7gCAAACACABAAQAIAIAAAAAAAAAAAA==");
 let widths = atob("AwIEBgYIBgIEBAUGAwUDBAYEBgYGBgYGBgYEBQYFBgYLBwcHBwcGBwcEBQcGCAcHBwcHBgYHBwkHBwcDBAMHBwMGBgYGBgUGBgIEBgIIBgYGBgQFBAYGCAYGBQQCBAc=");
 
@@ -27,7 +29,7 @@ return Math.floor(Math.sin(Math.PI * m/30) * 80);
                
 let xS=.8,yS=.8;
 const startX=[10,45,10,45],startY=[18,18,80,80],nmX=[16,42,88,126],nmY=[12,12,12,12];let rotate=!1;function setScale(t,r){xS=t,yS=r}function drawScaledPoly(r,n,a){let d=[];for(let t=0;t<r.length;t+=2){var e;d[t]=Math.floor(r[t]*xS)+n,d[t+1]=Math.floor(r[t+1]*yS)+a,rotate&&(e=d[t],d[t]=80-d[t+1],d[t+1]=e)}g.fillPoly(d,!1)}let d0=new Uint8Array([0,4,4,0,32,0,36,4,36,65,25,65,25,5,11,5,11,65,36,65,36,66,32,70,4,70,0,66]),d1=new Uint8Array([7,4,11,0,20,0,24,4,24,70,13,70,13,5,7,5]),d2=new Uint8Array([0,4,4,0,32,0,36,4,36,34,32,38,11,38,11,65,36,65,36,66,32,70,0,70,0,36,4,32,25,32,25,5,0,5]),d3=new Uint8Array([0,4,4,0,32,0,36,4,36,66,32,70,4,70,0,66,0,65,25,65,25,38,0,38,0,32,25,32,25,5,0,5]),d4=new Uint8Array([0,4,4,0,11,0,11,32,25,32,25,0,32,0,36,4,36,70,25,70,25,38,0,38]),d5=new Uint8Array([0,0,32,0,36,4,36,5,11,5,11,32,32,32,36,36,36,66,32,70,4,70,0,66,0,65,25,65,25,38,0,38]),d6=new Uint8Array([0,4,4,0,32,0,36,4,36,5,11,5,11,65,25,65,25,38,11,38,11,32,32,32,36,36,36,66,32,70,4,70,0,66]),d7=new Uint8Array([0,4,4,0,32,0,36,4,36,70,25,70,25,5,0,5]),d8=new Uint8Array([0,4,4,0,32,0,36,4,36,32,33,35,36,38,36,66,32,70,18,70,18,65,25,65,25,38,18,38,18,32,25,32,25,5,11,5,11,32,18,32,18,38,11,38,11,65,18,65,18,70,4,70,0,66,0,38,3,35,0,32]),d9=new Uint8Array([0,4,4,0,32,0,36,4,36,66,32,70,4,70,0,65,0,65,25,65,25,5,11,5,11,32,25,32,25,38,4,38,0,34]);function drawDigit(t,r,n){let a=(n?nmX:startX)[t];t=(n?nmY:startY)[t];EMULATOR&&(a+=80),drawScaledPoly([d0,d1,d2,d3,d4,d5,d6,d7,d8,d9][r],a,t)}
-
+/*
 let drawMin = (m) => {
   g.setColor(7);
   for(let a=0; a<=m; a++) {
@@ -36,6 +38,7 @@ let drawMin = (m) => {
   }
   g.flip();
 };
+*/
 function pct2col(r,g,b,p) {
   let r1 = Math.floor(r*32*p);
   if(r1 > 31) r1 = 31;
@@ -52,27 +55,15 @@ function pct2col(r,g,b,p) {
 */
 var batt=E.getBattery();
 let lastTime = '';
+let lastDate = '';
 let EMULATOR = false; 
 let showClockTO = 0;
 
 let myName = NRF.getAddress().slice(-5);
 console.log(myName);
 
-/**** BEGIN ALARMS *******/
-let _Alarms = [];
-let inAlarm = false;
-let loadAlarms = () => {
-  _Alarms =  _Storage.readJSON('alarms.json');
-  if(!_Alarms) _Alarms = [{"msg":"13:53|Stop|working|today","time":"2021-12-21T13:53:00"}];
-  //_Alarms.sort((a,b) => {return(a.time > b.time);});
-  scheduleAlarms();
-};
-
-
 function notify() {
-  logD('notify START');
   [400,800,1200,2000,2400].forEach((t) => {setTimeout(Bangle.buzz, t, 175);});
-  logD('notify END');
 }
 
 g.sc = (n) => {g.setColor([
@@ -83,10 +74,32 @@ g.sc = (n) => {g.setColor([
 ][n]);};
 
 
-let showMsg = (title, msg) => {  inAlarm = true;
+
+/**** BEGIN ALARMS *******/
+let _Alarms = [];
+let _tidBits = ["tb1","tb2","tb3"];
+let inAlarm = false;
+let inNotes = false;
+let loadAlarms = () => {
+  _Alarms =  _Storage.readJSON('alarms.json');
+  if(!_Alarms) _Alarms = [{"msg":"13:53|Stop|working|today","time":"2021-12-21T13:53:00"}];
+  //_Alarms.sort((a,b) => {return(a.time > b.time);});
+  scheduleAlarms();
+};
+let showNotes = () => {
+  let n = _S.read('notes.txt');
+  if(n) {
+    showMsg('', n);
+    inNotes = true;
+  }
+};
+let showBits = () => {
+  showMsg('', _tidBits[Math.floor(Math.random()*(_tidBits.length))]);
+}
+let showMsg = (title, msg) => {  
   g.setFont("Omnigo");
   g.setColor("#000000");
-  g.fillRect(0,80,79,159);
+  g.fillRect(0,86,79,159);
   g.setColor("#CCCCCC");
   g.setFontAlign(0,-1);
   let y = 90; //8 +  g.getFontHeight();
@@ -100,17 +113,13 @@ let showMsg = (title, msg) => {  inAlarm = true;
     if(w != '|') mstr += w + ' ';
   });
   g.drawString(mstr, 40, y);
-  notify();
 };
-
-/*
-** alarms are in order, pop the top and show it
-*/
 
 function showAlarm(msg) {
   console.log(`alarming w ${msg}`);
+  inAlarm = true;
   showMsg('', msg);
-  // remove the TO from the list, so we don't kill something by accident
+  notify();
 }
 
 let alarmTOs = [];
@@ -140,59 +149,6 @@ let schAls = (als) => {_Alarms = als; scheduleAlarms(); };
 ********************************************* END ALARMS *******************************
 */
 
-/*
-var buzzLock = 0;
-function buzzClock (h,m) {
-  // skip if either lockout or canceled: 10 or 01 (i.e. not 0)
-  if(buzzLock) {
-    buzzLock &= 0b10;
-    console.log('no buzz..resetting');
-    return;
-  }
-  console.log('buzzing');
-  // vibrate: long = 5, short = 1
-  const lvl = 0.8, LONGBZ = 600, SHORTBZ = 150;
-  // hours
-  let n = Math.floor(h/5);
-  if(n) vibrate(lvl, n, LONGBZ, 100);
-  vibrate(lvl, h%5, SHORTBZ, 200);
-  // delay
-  vibrate(0.0, 1, 500, 500);
-  // 10 mins - always single pulses
-  n = Math.floor(m/10);
-  if(n) vibrate(lvl, n, SHORTBZ, 200);
-  vibrate(0.0, 1, 500, 500);
-  // 1 mins
-  if(m % 10 >= 5){ vibrate(lvl, 1, LONGBZ, 100); m -= 5; }
-  vibrate(lvl, m%5, SHORTBZ, 200);
-  // lockout for one minute
-  buzzLock |= 0b10;
-  setTimeout(function() { buzzLock &= 0b01; digitalWrite(VIB, 0);}, 60000);
-}
-*/
-ACCEL.isFaceUp = false;
-
-function checkFaceup() {
-  let xyz = ACCEL.read();
-  //console.log(JSON.stringify(xyz));
-  if((xyz.ax > 20 && xyz.ax < 240) || xyz.ay > 40 || xyz.ay < 20) {
-    ACCEL.isFaceUp = false;
-    return;
-  }
-  // have we switched?
-  if(ACCEL.isFaceUp == false) {
-    ACCEL.emit("faceup");
-  }
-  ACCEL.isFaceUp = true;
-}
-
-ACCEL.on("faceup", ()=>{
-  logD(`** FACE UP! **`);
-  wOS.wake();
-  drawDayClock();
-
-});
-
 function drawDayClock() {
   //logD('checkClock START');
   let d=Date();
@@ -208,6 +164,11 @@ function drawDayClock() {
     return;
   }
   lastTime = tm;
+
+  if(d[2] != lastDate) {
+    wOS.setStepCount(0);
+    lastDate = d[2];
+  }
 
   logD(`tm = ${tm}; lastTime = ${lastTime}`);
   
@@ -264,19 +225,38 @@ function drawDayClock() {
 
   
   // MID BAR 
-  let steps = 0;
+  let steps = Bangle.getStepCount();
   g.setColor("#aaaaaa")
   for(let x=0; x<10; x++) {
-    if(steps < x*10) g.setColor("#555555");
+    if(steps < x*1000) g.setColor("#555555");
     g.fillRect(x*8+1,83,x*8+7,85);
   }
+  // NO!!!!
+  g.setFontAlign(1,1).drawString(steps, 80, 81,true);
+
+  // what to show down below
+  if(!inAlarm) {
+    showNotes();
+  }
+  
 }
+
+// IF NOT NIGHT MODE
+setInterval(()=> {
+    // what to show down below
+    if(!inAlarm) {
+      showNotes();
+      if(!inNotes) {
+        // need a delay; OK to show bit...
+        showBits();
+      }
+    }
+}, 2*3600*1000);
 
 function drawNightClock(d) {
   g.clear();
     rotate = true;
     g.setColor(4);
-    if(EMULATOR) g.setColor(0.5,0.5,0.5);
   //console.log("draw1: "+d.hr);
     if (d.hr>9) drawDigit(0,Math.floor(d.hr/10), true);
     drawDigit(1,Math.floor(d.hr%10), true);
@@ -285,7 +265,7 @@ function drawNightClock(d) {
     drawDigit(3,Math.floor(d.min%10), true);
     g.fillCircle(40, 80,2);
     g.fillCircle(24, 80,2);
-    let b = battLevel();
+    let b = E.getBattery();
     for(let c=0; c<5; c++) {
       if(b > c*20) g.drawCircle(16+12*c, 8, 4);
       //else g.drawCircle(14+12*c,8,4);
@@ -293,37 +273,11 @@ function drawNightClock(d) {
     g.flip();
 }
 
-function clock(){
-  volts=0;
-  showClockTO = 0;
-  return setInterval(checkFaceup,555);
-}
-
-function sleep(){
-  g.clear();//g.flip();
-  inAlarm = false;
-  // clean up the last screen's mess...
-  if(showClockTO)   clearTimeout(showClockTO);
-  // just in case - shutdown the buzzer
-  analogWrite(VIB,0);
-  //currscr=-1;
-  return 0;
-}
-
-var screens=[clock,sleep];
-var currscr= 0;
-var currint=screens[currscr]();
-//let longpress = 0;
-let longpressTO = 0;
-
-let nextScreen = () => {
-  currscr++;if (currscr>=screens.length) currscr=0;
-  if (currint > 0) clearInterval(currint);
-  logD(`Running screen ${currscr}`);
-  currint = screens[currscr]();
-  Bangle.buzz();
-};
-/* */
+ACCEL.on("faceup", ()=>{
+  logD(`** FACE UP! **`);
+  wOS.wake();
+  drawDayClock();
+});
 
 
 let BUTTON = {
@@ -380,11 +334,18 @@ const btnUp = (b) => {
 };
 
 setWatch(btnDown, BTN1, BUTTON.downOpts);
+
+
 BUTTON.on('tap',()=>{console.log('tap');});
 BUTTON.on('longpress',()=>{
   console.log('longpress');
   if(wOS.awake) {
-    inAlarm = false;lastTime='';
+    showMsg('',''); // clear until next tidbit
+    if(inAlarm) {
+      inAlarm = false; lastTime='';
+    } else {
+      inNotes = !inNotes;
+    }
     Bangle.buzz();
   }
 });

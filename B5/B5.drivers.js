@@ -157,11 +157,12 @@ NRF.on('disconnect',function(reason) {
 });
 */
 
+/*
 var fc=new SPI(); // font chip - 2MB SPI flash
 D12.write(1);
 fc.setup({sck:D14,miso:D11,mosi:D13,mode:0});
 fc.send([0xb9],D12); //put to deep sleep
-
+*/
 /*
 //print(fc.send([0xab],D23)); // wake from deep sleep
 //print(fc.send([0x90,0,0,1,0,0],D23));
@@ -179,39 +180,9 @@ setWatch(()=>{
 wOS.i2c = new I2C();
 wOS.i2c.setup({scl:D18,sda:D17,bitrate:200000});
 
-let ACCEL = {
-  CNTL1: 0x18,
-  INC1: 0x1c,
-  writeByte:(a,d) => { 
-      wOS.i2c.writeTo(0x1f,a,d);
-  }, 
-  readBytes:(a,n) => {
-      wOS.i2c.writeTo(0x1f, a);
-      return wOS.i2c.readFrom(0x1f,n); 
-  },
-  init:() => {
-    let cmds = [
-        [0x18, 0x0],[0x1b, 0x2],[0x18, 0x80]
-      ];
-    cmds.forEach((cmd) => {
-      ACCEL.writeByte(cmd[0], cmd[1]);
-    });
-    
-    // ACCEL.readBytes(0x0f,1)[0];
-    
-  },
-  read:()=>{
-      function conv(lo,hi) { 
-        var i = (hi<<8)+lo;
-        return ((i & 0x7FFF) - (i & 0x8000))/16;
-      }
-      var a = ACCEL.readBytes(0x6,6); 
-      return {ax:a[1], ay:a[3], az:a[5]};
-  },
-};
-setTimeout(ACCEL.init, 1000);
+ACCEL = require("~KX022.js").init({i2c:wOS.i2c, intpin:D1});
 
-eval(_S.read("ST7735.js"));
+eval(_S.read("~ST7735.js"));
 g = ST7735();
 
 //wOS.ticker = setInterval(wOS.tick,1000);
@@ -231,8 +202,11 @@ E.getBattery = function (){
   return Math.floor(100*(v-l)/(h-l));
 };
 
-wOS.getStepCount = ()=>{ return ACCEL.getSteps(); };
-wOS.resetStepCounter = () => { ACCEL.resetSteps(); }; 
+wOS.steps = 0;
+wOS.getStepCount = () => {return wOS.steps;};
+wOS.setStepCount= (s) => {wOS.steps = s;};
+wOS.resetStepCounter = () => { wOS.setStepCount(0); };
+ACCEL.on("step", ()=>{wOS.steps++;});
 
 wOS.showLauncher = function(){
   //load("launch.js");
