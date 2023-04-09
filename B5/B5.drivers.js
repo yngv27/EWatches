@@ -180,20 +180,11 @@ setWatch(()=>{
 wOS.i2c = new I2C();
 wOS.i2c.setup({scl:D18,sda:D17,bitrate:200000});
 
-ACCEL = require("~KX022.js").init({i2c:wOS.i2c, intpin:D1});
+AC = require("~KX022.js").init({i2c:wOS.i2c, intpin:D1});
 
 eval(_S.read("~ST7735.js"));
 g = ST7735();
 
-//wOS.ticker = setInterval(wOS.tick,1000);
-
-/*
-setWatch(() =>{
-  if(wOS.awake) {
-      wOS.showLauncher();
-  } else  wOS.wake();
-},BTN1,{repeat:true,edge:"rising"});
-*/
 E.getBattery = function (){
   var l=3.5,h=4.19;
   v=4.20/0.320*analogRead(D4);
@@ -206,11 +197,65 @@ wOS.steps = 0;
 wOS.getStepCount = () => {return wOS.steps;};
 wOS.setStepCount= (s) => {wOS.steps = s;};
 wOS.resetStepCounter = () => { wOS.setStepCount(0); };
-ACCEL.on("step", ()=>{wOS.steps++;});
-
+AC.on("STEP", ()=>{wOS.steps++;});
+AC.on("FACEUP", wOS.wake);
 wOS.showLauncher = function(){
   //load("launch.js");
 };
 
 global.Bangle = wOS;
 
+// MANAGE EVENTS
+let BUTTON = {
+  lastUp: 0,
+  longpressTO: 0,
+  tapTO: 0,
+  longTime: 1000,
+  tapTime: 250,
+  dbltap: false,
+  watchUp: false,
+  upOpts: { repeat:false, edge:'falling', debounce:25},
+  dnOpts: { repeat:false, edge:'rising', debounce:25},
+};
+  
+const btnDown = (b) => {
+  //longpress = b.time;
+  if(BUTTON.tapTO) {
+    clearTimeout(BUTTON.tapTO);
+    BUTTON.tapTO = 0;
+    BUTTON.dbltap = true;
+  }
+  BUTTON.longpressTO = setTimeout(function(){
+    // long press behaviour
+    BUTTON.emit('longpress');
+    BUTTON.longpressTO = 0;
+    // ignore button up
+    BUTTON.watchUp = false;
+  }, BUTTON.longTime);
+  logD(`lpto=${BUTTON.longpressTO}`);
+  BUTTON.watchUp = true;
+  setWatch(btnUp, BTN1, BUTTON.upOpts);
+};
+
+const btnUp = (b) => {
+  if(BUTTON.longpressTO) {
+    clearTimeout(BUTTON.longpressTO);
+    BUTTON.longpressTO = 0;
+  } 
+  if(BUTTON.dbltap) {
+    BUTTON.emit('dbltap');
+    BUTTON.dbltap = false;
+  } else if (BUTTON.watchUp) {
+    BUTTON.tapTO = setTimeout(function(){
+      // long press behaviour
+      BUTTON.emit('tap');
+      BUTTON.tapTO = 0;
+      BUTTON.dbltap = false;
+    }, BUTTON.tapTime);
+    logD(`lpto=${BUTTON.tapTO}`);
+  }
+  BUTTON.lastUp = b.time;
+  setWatch(btnDown, BTN1, BUTTON.downOpts);
+};
+
+setWatch(btnDown, BTN1, BUTTON.downOpts);
