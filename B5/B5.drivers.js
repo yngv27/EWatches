@@ -11,15 +11,16 @@ global.wOS = {
   time_left:10,
   ticker:undefined,
   settings:undefined,
-  buzz: function(v){
+  buzz: function(v, i){
       return new Promise(function(resolve, reject) {
           v = v? v : 100;
+          i=i?i:1.0; // intensity
           if (!wOS.VIBRATE) resolve();
           else if (v<=50){
               digitalPulse(wOS.BUZZPIN,false,v);
               resolve();
           } else {
-              wOS.BUZZPIN.set();
+              analogWrite(wOS.BUZZPIN,i);
               setTimeout(()=>{wOS.BUZZPIN.reset();resolve();},v);
           }
       });
@@ -180,7 +181,12 @@ setWatch(()=>{
 wOS.i2c = new I2C();
 wOS.i2c.setup({scl:D18,sda:D17,bitrate:200000});
 
-AC = require("~KX022.js").init({i2c:wOS.i2c, intpin:D1});
+//AC = require("~KX022.js").init({i2c:wOS.i2c, intpin:D1});
+eval(_S.read("~KX022.js"));
+setTimeout(()=>{
+  ACCEL.init({i2c:wOS.i2c, intpin:D1});
+}, 250);
+AC=ACCEL;
 
 eval(_S.read("~ST7735.js"));
 g = ST7735();

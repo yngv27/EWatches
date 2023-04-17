@@ -2,6 +2,7 @@ let ACCEL = {
   CNTL1: 0x18,
   INC1: 0x1c,
   isFaceUp: false,
+  i2c: {},
   writeByte:(a,d) => { 
     wOS.i2c.writeTo(0x1f,a,d);
   }, 
@@ -45,7 +46,7 @@ let ACCEL = {
   }
 };
 
-exports.init = (opts) => {
+ACCEL.init = (opts) => {
     let cmds = [
         [0x18, 0x0],[0x1b, 0x2],[0x18, 0x80]
     ];
@@ -56,6 +57,6 @@ exports.init = (opts) => {
       ACCEL.checkFaceup();
       ACCEL.checkStep();
     }, 375);
-    return ACCEL;
+    //return ACCEL;
 };
 

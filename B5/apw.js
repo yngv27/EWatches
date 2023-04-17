@@ -81,7 +81,7 @@ function alarm() {
   [400,800,1200,2000,2400].forEach((t) => {setTimeout(Bangle.buzz, t, 175);});
 }
 function notify() {
-  [300,800].forEach((t) => {setTimeout(Bangle.buzz, t, 250);});
+  [300,800].forEach((t) => {setTimeout(Bangle.buzz, t, 250, 0.5);});
 }
 _C = {
   CYAN: "#80FFFF",
@@ -93,7 +93,7 @@ _C = {
 let _Alarms = [];
 let _tidBits = ["tb1","tb2","tb3"];
 let inAlarm = false;
-let inNotes = false;
+//let inNotes = false;
 let loadAlarms = () => {
   _Alarms =  _Storage.readJSON('alarms.json');
   if(!_Alarms) _Alarms = [{"msg":"13:53|Stop|working|today","time":"2021-12-21T13:53:00"}];
@@ -104,8 +104,9 @@ let showNotes = () => {
   let n = _S.read('notes.txt');
   if(n) {
     showMsg('', n);
-    inNotes = true;
+    return true;
   }
+  return false;
 };
 let showBits = () => {
   showMsg('', _tidBits[Math.floor(Math.random()*(_tidBits.length))]);
@@ -164,36 +165,8 @@ let schAls = (als) => {_Alarms = als; scheduleAlarms(); };
 ********************************************* END ALARMS *******************************
 */
 
-function drawDayClock() {
-  //logD('checkClock START');
-  let d=Date();
-  let dt=d.toString().substr(0,10);
-  d=d.toString().split(' ');
-  let tm=d[4].substring(0,5);
-  let hr=d[4].substr(0,2);
-  let min=d[4].substr(3,2);
-  //let sec=d[4].substr(6,2);
 
-  if (tm == lastTime) {
-    logD(`clock unchanged - returning`);
-    return;
-  }
-  lastTime = tm;
-
-  if(d[2] != lastDate) {
-    wOS.setStepCount(0);
-    lastDate = d[2];
-  }
-
-  logD(`tm = ${tm}; lastTime = ${lastTime}`);
-  
-  //if(inAlarm) { } // we all share the screen now
-
-  let nm = false;
-  
-  hr %= 12;
-  if (hr === 0) hr = 12;
-  min = parseInt(min);
+let drawDayClock = (d) => {
   xmid = g.getWidth()/2;
 
   g.clearRect(0,0,79,79);
@@ -202,18 +175,18 @@ function drawDayClock() {
   rotate = false;
   
   g.setColor(_C.CYAN);
-  if(Math.floor(hr/10) > 0) {
+  if(Math.floor(d.hr/10) > 0) {
     setScale(0.6,0.8);
     drawScaledPoly(darr[1],0,22); //52);
-    drawScaledPoly(darr[hr%10],18,22); //52);
+    drawScaledPoly(darr[d.hr%10],18,22); //52);
   } else {
     setScale(0.8,0.8);
-    drawScaledPoly(darr[hr],8,22); //52);
+    drawScaledPoly(darr[d.hr],8,22); //52);
   }
   g.setColor(_C.WHITE);
   setScale(0.5,0.55);
-  drawScaledPoly(darr[Math.floor(min/10)], 42,22); //52);
-  drawScaledPoly(darr[Math.floor(min%10)], 62,22); //52);
+  drawScaledPoly(darr[Math.floor(d.min/10)], 42,22); //52);
+  drawScaledPoly(darr[Math.floor(d.min%10)], 62,22); //52);
   //g.flip();
 
     // TOP BAR
@@ -232,7 +205,7 @@ function drawDayClock() {
   //g.setFontAlign(-1,-1).drawString(dt,0,1);
   g.setColor("#80ffcc");
   //g.setClipRect(0,0,79,7)
-  g.setFontAlign(0,-1).drawString(dt,40,6);
+  g.setFontAlign(0,-1).drawString(d.niceDate,40,6);
   //g.setFontAlign(1,-1).drawString(`[${batt}]`,80,1);
 //g.setClipRect(0,0,79,159);
 
@@ -245,16 +218,10 @@ function drawDayClock() {
     g.fillRect(x*8+1,83,x*8+7,85);
   }
   // NO!!!!
-  g.setFontAlign(1,1).drawString(steps, 80, 81,true);
+  g.setColor(0.8,1,0.9).setFontAlign(1,1).drawString(steps, 80, 81,true);
+};
 
-  // what to show down below
-  if(!inAlarm) {
-    showNotes();
-  }
-  
-}
-
-function drawNightClock(d) {
+let drawNightClock = (d) => {
   g.clear();
     rotate = true;
     g.setColor(4);
@@ -274,18 +241,51 @@ function drawNightClock(d) {
     g.flip();
 }
 
+function clock() {
+  //logD('checkClock START');
+  let d=Date().toString().split(' ');
+  let dt= {
+    niceDate: Date().toString().substr(0,10),
+    tm: d[4].substring(0,5),
+    hr: d[4].substr(0,2),
+    min: d[4].substr(3,2),
+    sec: d[4].substr(6,2),
+  }
+  if (dt.tm == lastTime) {
+    logD(`clock unchanged - returning`);
+    return;
+  }
+  lastTime = dt.tm;
+
+  if(d[2] != lastDate) {
+    wOS.setStepCount(0);
+    lastDate = d[2];
+  }
+
+  logD(`tm = ${dt.tm}; lastTime = ${lastTime}`);
+   
+  dt.hr %= 12;
+  if (dt.hr === 0) dt.hr = 12;
+  dt.min = parseInt(dt.min);
+
+  drawDayClock(dt);
+}
+
 let ival1 = 0; 
 let ival2 = 0;
 
 ival1 = wOS.on("lcdPower", (on)=>{
-  on ?   drawDayClock() : {};
+  if(on) {
+    clock();
+   } else {
+
+   };
 });
 // IF NOT NIGHT MODE
 ival2 = setInterval(()=> {
   // what to show down below
   if(!inAlarm) {
-    showNotes();
-    if(!inNotes) {
+    if(!showNotes()) {
       // need a delay; OK to show bit...
       showBits();
     }
@@ -304,9 +304,10 @@ wOS.UI.on("longpress", () => {
   if(wOS.awake) {
     showMsg('',''); // clear until next tidbit
     if(inAlarm) {
-      inAlarm = false; lastTime='';
+      inAlarm = false; lastTime=''; 
+      showNotes();
     } else {
-      inNotes = !inNotes;
+      //inNotes = !inNotes;
     }
     Bangle.buzz();
   }
@@ -315,3 +316,4 @@ wOS.UI.on("longpress", () => {
 wOS.UI.on("tap", () => {
 });
 
+showNotes();
