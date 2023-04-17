@@ -186,8 +186,8 @@ eval(_S.read("~ST7735.js"));
 g = ST7735();
 
 E.getBattery = function (){
-  var l=3.5,h=4.19;
-  v=4.20/0.320*analogRead(D4);
+  let l=3.5,h=4.19;
+  let v=4.20/0.320*analogRead(D4);
   if(v>=h)return 100;
   if(v<=l)return 0;
   return Math.floor(100*(v-l)/(h-l));
@@ -202,8 +202,10 @@ AC.on("FACEUP", wOS.wake);
 wOS.showLauncher = function(){
   //load("launch.js");
 };
+wOS.UI = {};
 
 global.Bangle = wOS;
+logD = print;
 
 // MANAGE EVENTS
 let BUTTON = {
@@ -227,7 +229,8 @@ const btnDown = (b) => {
   }
   BUTTON.longpressTO = setTimeout(function(){
     // long press behaviour
-    BUTTON.emit('longpress');
+    //BUTTON.emit('longpress');
+    wOS.UI.emit('longpress');
     BUTTON.longpressTO = 0;
     // ignore button up
     BUTTON.watchUp = false;
@@ -243,12 +246,14 @@ const btnUp = (b) => {
     BUTTON.longpressTO = 0;
   } 
   if(BUTTON.dbltap) {
-    BUTTON.emit('dbltap');
+    //BUTTON.emit('dbltap');
+    wOS.UI.emit('dbltap');
     BUTTON.dbltap = false;
   } else if (BUTTON.watchUp) {
     BUTTON.tapTO = setTimeout(function(){
       // long press behaviour
-      BUTTON.emit('tap');
+      //BUTTON.emit('tap');
+      wOS.UI.emit('tap');
       BUTTON.tapTO = 0;
       BUTTON.dbltap = false;
     }, BUTTON.tapTime);
@@ -259,3 +264,5 @@ const btnUp = (b) => {
 };
 
 setWatch(btnDown, BTN1, BUTTON.downOpts);
+
+

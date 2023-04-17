@@ -28,7 +28,25 @@ return Math.floor(Math.sin(Math.PI * m/30) * 80);
 };
                
 let xS=.8,yS=.8;
-const startX=[10,45,10,45],startY=[18,18,80,80],nmX=[16,42,88,126],nmY=[12,12,12,12];let rotate=!1;function setScale(t,r){xS=t,yS=r}function drawScaledPoly(r,n,a){let d=[];for(let t=0;t<r.length;t+=2){var e;d[t]=Math.floor(r[t]*xS)+n,d[t+1]=Math.floor(r[t+1]*yS)+a,rotate&&(e=d[t],d[t]=80-d[t+1],d[t+1]=e)}g.fillPoly(d,!1)}let d0=new Uint8Array([0,4,4,0,32,0,36,4,36,65,25,65,25,5,11,5,11,65,36,65,36,66,32,70,4,70,0,66]),d1=new Uint8Array([7,4,11,0,20,0,24,4,24,70,13,70,13,5,7,5]),d2=new Uint8Array([0,4,4,0,32,0,36,4,36,34,32,38,11,38,11,65,36,65,36,66,32,70,0,70,0,36,4,32,25,32,25,5,0,5]),d3=new Uint8Array([0,4,4,0,32,0,36,4,36,66,32,70,4,70,0,66,0,65,25,65,25,38,0,38,0,32,25,32,25,5,0,5]),d4=new Uint8Array([0,4,4,0,11,0,11,32,25,32,25,0,32,0,36,4,36,70,25,70,25,38,0,38]),d5=new Uint8Array([0,0,32,0,36,4,36,5,11,5,11,32,32,32,36,36,36,66,32,70,4,70,0,66,0,65,25,65,25,38,0,38]),d6=new Uint8Array([0,4,4,0,32,0,36,4,36,5,11,5,11,65,25,65,25,38,11,38,11,32,32,32,36,36,36,66,32,70,4,70,0,66]),d7=new Uint8Array([0,4,4,0,32,0,36,4,36,70,25,70,25,5,0,5]),d8=new Uint8Array([0,4,4,0,32,0,36,4,36,32,33,35,36,38,36,66,32,70,18,70,18,65,25,65,25,38,18,38,18,32,25,32,25,5,11,5,11,32,18,32,18,38,11,38,11,65,18,65,18,70,4,70,0,66,0,38,3,35,0,32]),d9=new Uint8Array([0,4,4,0,32,0,36,4,36,66,32,70,4,70,0,65,0,65,25,65,25,5,11,5,11,32,25,32,25,38,4,38,0,34]);function drawDigit(t,r,n){let a=(n?nmX:startX)[t];t=(n?nmY:startY)[t];EMULATOR&&(a+=80),drawScaledPoly([d0,d1,d2,d3,d4,d5,d6,d7,d8,d9][r],a,t)}
+const startX=[10,45,10,45],startY=[18,18,80,80],nmX=[16,42,88,126],nmY=[12,12,12,12];
+let rotate=!1;function setScale(t,r){xS=t,yS=r}
+function drawScaledPoly(r,n,a){let d=[];for(let t=0;t<r.length;t+=2){var e;d[t]=Math.floor(r[t]*xS)+n,d[t+1]=Math.floor(r[t+1]*yS)+a,rotate&&(e=d[t],d[t]=80-d[t+1],d[t+1]=e)}g.fillPoly(d,!1)}
+const darr = [
+  Uint8Array([0,4,4,0,32,0,36,4,36,65,25,65,25,5,11,5,11,65,36,65,36,66,32,70,4,70,0,66]),
+  Uint8Array([7,4,11,0,20,0,24,4,24,70,13,70,13,5,7,5]),
+  Uint8Array([0,4,4,0,32,0,36,4,36,34,32,38,11,38,11,65,36,65,36,66,32,70,0,70,0,36,4,32,25,32,25,5,0,5]),
+  Uint8Array([0,4,4,0,32,0,36,4,36,66,32,70,4,70,0,66,0,65,25,65,25,38,0,38,0,32,25,32,25,5,0,5]),
+  Uint8Array([0,4,4,0,11,0,11,32,25,32,25,0,32,0,36,4,36,70,25,70,25,38,0,38]),
+  Uint8Array([0,0,32,0,36,4,36,5,11,5,11,32,32,32,36,36,36,66,32,70,4,70,0,66,0,65,25,65,25,38,0,38]),
+  Uint8Array([0,4,4,0,32,0,36,4,36,5,11,5,11,65,25,65,25,38,11,38,11,32,32,32,36,36,36,66,32,70,4,70,0,66]),
+  Uint8Array([0,4,4,0,32,0,36,4,36,70,25,70,25,5,0,5]),
+  Uint8Array([0,4,4,0,32,0,36,4,36,32,33,35,36,38,36,66,32,70,18,70,18,65,25,65,25,38,18,38,18,32,25,32,25,5,11,5,11,32,18,32,18,38,11,38,11,65,18,65,18,70,4,70,0,66,0,38,3,35,0,32]),
+  Uint8Array([0,4,4,0,32,0,36,4,36,66,32,70,4,70,0,65,0,65,25,65,25,5,11,5,11,32,25,32,25,38,4,38,0,34])
+];
+function drawDigit(t,r,n){
+  let a=(n?nmX:startX)[t];t=(n?nmY:startY)[t];
+  //drawScaledPoly([d0,d1,d2,d3,d4,d5,d6,d7,d8,d9][r],a,t)}
+  drawScaledPoly(darr[r],a,t);}
 /*
 let drawMin = (m) => {
   g.setColor(7);
@@ -53,26 +71,22 @@ function pct2col(r,g,b,p) {
 /*
 ** END WATCH FACE
 */
-var batt=E.getBattery();
 let lastTime = '';
 let lastDate = '';
-let EMULATOR = false; 
-let showClockTO = 0;
 
 let myName = NRF.getAddress().slice(-5);
 console.log(myName);
 
-function notify() {
+function alarm() {
   [400,800,1200,2000,2400].forEach((t) => {setTimeout(Bangle.buzz, t, 175);});
 }
-
-g.sc = (n) => {g.setColor([
-    "#000000","#000080","#008000","#008080",
-    "#800000","#800080","#808000","#808080",
-    "#8080FF","#8080FF","#80FF80","#80FFFF",
-    "#FF80FF","#FF80FF","#FFFF80","#FFFFFF",
-][n]);};
-
+function notify() {
+  [300,800].forEach((t) => {setTimeout(Bangle.buzz, t, 250);});
+}
+_C = {
+  CYAN: "#80FFFF",
+  WHITE: "#FFFFFF",
+};
 
 
 /**** BEGIN ALARMS *******/
@@ -95,6 +109,7 @@ let showNotes = () => {
 };
 let showBits = () => {
   showMsg('', _tidBits[Math.floor(Math.random()*(_tidBits.length))]);
+  notify();
 }
 let showMsg = (title, msg) => {  
   g.setFont("Omnigo");
@@ -119,7 +134,7 @@ function showAlarm(msg) {
   console.log(`alarming w ${msg}`);
   inAlarm = true;
   showMsg('', msg);
-  notify();
+  alarm();
 }
 
 let alarmTOs = [];
@@ -186,18 +201,16 @@ function drawDayClock() {
 
   rotate = false;
   
-  const darr = [d0,d1,d2,d3,d4,d5,d6,d7,d8,d9];
-  
-  g.sc(11);
+  g.setColor(_C.CYAN);
   if(Math.floor(hr/10) > 0) {
     setScale(0.6,0.8);
-    drawScaledPoly(d1,0,22); //52);
+    drawScaledPoly(darr[1],0,22); //52);
     drawScaledPoly(darr[hr%10],18,22); //52);
   } else {
     setScale(0.8,0.8);
     drawScaledPoly(darr[hr],8,22); //52);
   }
-  g.sc(15);
+  g.setColor(_C.WHITE);
   setScale(0.5,0.55);
   drawScaledPoly(darr[Math.floor(min/10)], 42,22); //52);
   drawScaledPoly(darr[Math.floor(min%10)], 62,22); //52);
@@ -241,18 +254,6 @@ function drawDayClock() {
   
 }
 
-// IF NOT NIGHT MODE
-setInterval(()=> {
-    // what to show down below
-    if(!inAlarm) {
-      showNotes();
-      if(!inNotes) {
-        // need a delay; OK to show bit...
-        showBits();
-      }
-    }
-}, 2*3600*1000);
-
 function drawNightClock(d) {
   g.clear();
     rotate = true;
@@ -273,13 +274,32 @@ function drawNightClock(d) {
     g.flip();
 }
 
-wOS.on("lcdPower", (on)=>{
+let ival1 = 0; 
+let ival2 = 0;
+
+ival1 = wOS.on("lcdPower", (on)=>{
   on ?   drawDayClock() : {};
 });
+// IF NOT NIGHT MODE
+ival2 = setInterval(()=> {
+  // what to show down below
+  if(!inAlarm) {
+    showNotes();
+    if(!inNotes) {
+      // need a delay; OK to show bit...
+      showBits();
+    }
+  }
+}, 1.7*3600*1000);
 
 
-BUTTON.on('tap',()=>{console.log('tap');});
-BUTTON.on('longpress',()=>{
+stop = () => {
+  alarmTOs.forEach((to)=>{clearInterval(to);});
+  clearInterval(ival1);
+  clearInterval(ival2);
+};
+
+wOS.UI.on("longpress", () => {
   console.log('longpress');
   if(wOS.awake) {
     showMsg('',''); // clear until next tidbit
@@ -291,7 +311,7 @@ BUTTON.on('longpress',()=>{
     Bangle.buzz();
   }
 });
-BUTTON.on('dbltap',()=>{
-  console.log('dbltap');
-  nextScreen();
+  
+wOS.UI.on("tap", () => {
 });
+
