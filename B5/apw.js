@@ -1,6 +1,4 @@
-/*
-eval(_S.read("apw.js"))
-*/
+
 E.setTimeZone(-4);
 
 let font = atob("AAAAAAAAB/QAAcAAAHAAAAKAPgCgD4AoAAAZgWQf8E0DMAAAQwUwKwC0A1AygwgAAM4LmE5BnAGwAAcAAAB8DjhAQAAQEOOB8AAAqAOAHAFQAAAQAIAfACABAAAABoA4AACABAAgAQAAAAYAMAAAHAeB4AAAP4MWERDRg/gAAIAP+AAAAAhwxoRkNiDhAAAggwYRENmDeAAAHAOgMQP+AEAAB4gkYSEJmEeAAA/g2YSEJmAeAABAAg4RwLgHAAAA3g2YRENmDeAAA8AzIQkM2D+AAAAAMwGYAAAAAzQZwAAAAAgA4A2AxgQQAABQAoAUAKAAAIIGMBsAcAEAAAIAMAEdDYA4AAAHwGMGDCchbQooXkEYDEA8AAAB4HwOIB0AOABwAAf8IiERCYg8wDwAAH8GDCAhAQwYIIAAH/CAhAQwIMMD8AAD/hEQiIREICAAD/hEAiARAIAAAB/BgwgIREMmCeAAB/wCABAAgAQD/gAAAAf8AAAAABAAwAIf4AAH/AYAeAZgYYIGAAD/gAQAIAEACAAD/gwAGABwBgDAD/gAA/4MABgAYADB/wAAP4MGEBCAhgwfwAAP+EICEBCAzAPAAAD+DBhBQg4YMH+AAAAB/wjARwIsGzBwgAAYQWMJiGbBHAAAgAQAP+EACAAAA/wAMACADADB/wAAeAB4AHAOAcA4AAAPAA4AHgeADAAcB4HgAABgwYwDgBwDGDBgAA4AHAA+AwBwBgAAAQcIaEZCYhYQ4IAAP+EBAAB4AHAA8AAEBD/gAAIAMAMAGABgAQAAAAEACABAAgAQAIAAMADAAAADgLYFEDiA/AAB/wEIGEDGA+AAAPgMYEEDGAiAAAPgMYGEBCH/AAAPgNYEkDSA4AAAIAf4aAIAAAAfAY0ISEbD/AAD/gMAMAGAB+AAC/gAAACADL/AAD/gGAHgGYCGAAD/gAAP4GACAA/AwAQAH4AAD+AgAwAYAH4AAB8BjAggYwHwAAD/hCAhgYwHwAAB8BjAhgQgP+AAD+AwAwAAAGIFkCaBGAAAQA/wEMAAB+ABgAwAQH8AABwAOABwDgHAAABwAOABwDgAcA4BwAAAYwGwBwBsBjAAAfgAaAJANh/gAARwJoFkDiAAAIA7ggIAAP+AACAg7gCAAACACABAAQAIAIAAAAAAAAAAAA==");
@@ -56,7 +54,7 @@ let drawMin = (m) => {
   }
   g.flip();
 };
-*/
+
 function pct2col(r,g,b,p) {
   let r1 = Math.floor(r*32*p);
   if(r1 > 31) r1 = 31;
@@ -67,6 +65,7 @@ function pct2col(r,g,b,p) {
   //r1 *= p; g1 *= p; b1 *= p;
   return (r1 << 11) + (g1 << 6) + b1;
 }
+*/
 
 /*
 ** END WATCH FACE
@@ -165,7 +164,6 @@ let schAls = (als) => {_Alarms = als; scheduleAlarms(); };
 ********************************************* END ALARMS *******************************
 */
 
-
 let drawDayClock = (d) => {
   xmid = g.getWidth()/2;
 
@@ -188,62 +186,78 @@ let drawDayClock = (d) => {
   drawScaledPoly(darr[Math.floor(d.min/10)], 42,22); //52);
   drawScaledPoly(darr[Math.floor(d.min%10)], 62,22); //52);
   //g.flip();
-
-    // TOP BAR
-  //g.setFont("Dylex7x13");
-  g.setFontAlign(0,-1);
-  g.setColor("#009800");
+  drawThings(d);
+}
+function drawThings(d) {
+    // STATUS
+  g.setFontAlign(0,-1).setColor("#009800");
   let batt = E.getBattery(); //process.env.VERSION; //battInfo();
   for(let x=0; x<5; x++) {
     if(batt < x*20) g.setColor("#004000");
     g.fillRect(x*17,0,x*17+12,2);
   }
-  // full bkgd
-  //g.fillPoly([0,0,8,12,71,12,79,0],true);
-  // par'l bkgd
-  //g.fillPoly([0,0,8,8,71,8,79,0],true);
-  //g.setFontAlign(-1,-1).drawString(dt,0,1);
-  g.setColor("#80ffcc");
-  //g.setClipRect(0,0,79,7)
-  g.setFontAlign(0,-1).drawString(d.niceDate,40,6);
-  //g.setFontAlign(1,-1).drawString(`[${batt}]`,80,1);
-//g.setClipRect(0,0,79,159);
-
+  g.setColor("#80ffcc").setFontAlign(0,-1).drawString(d.niceDate,40,6);
   
   // MID BAR 
   let steps = Bangle.getStepCount();
-  g.setColor("#aaaaaa")
+  g.setColor("#6161ea")
   for(let x=0; x<10; x++) {
-    if(steps < x*1000) g.setColor("#555555");
-    g.fillRect(x*8+1,83,x*8+7,85);
+    if(steps < x*1000) g.setColor("#808080");
+    g.fillRect(x*5+1,83,x*5+4,85);
   }
-  // NO!!!!
-  g.setColor(0.8,1,0.9).setFontAlign(1,1).drawString(steps, 80, 81,true);
+  g.setColor(0.8,1,0.9).setFontAlign(1,1).drawString(steps, 80, 87,true);
 };
+lgfont = require("QuickL.js");
+smfont = require("QuickS.js");
+
+let x1 = 8, x2 = 8, x3 = 48, x4 = 62;
+let xh1 = -10, xh2 = 18;
+
+let drawCoolClock = (d) => {
+  if(Date().getFullYear() < 2000) showAlarm('','TIME IS NOT SET')
+  g.clearRect(0,0,79,79);
+  console.log("DrawCoolClock: time to draw");
+  g.setColor(_C.CYAN);
+  if(Math.floor(d.hr/10) > 0) {
+    g.drawImage(lgfont.getDigit(1),xh1,22); 
+    g.drawImage(lgfont.getDigit(d.hr%10),xh2,22); //52);
+  } else {
+    g.drawImage(lgfont.getDigit(d.hr),x2,22); //52);
+  }
+  g.setColor(_C.WHITE);
+  g.drawImage(smfont.getDigit(Math.floor(d.min/10)), x3,22); //52);
+  g.drawImage(smfont.getDigit(d.min%10), x4,22); //52);
+  drawThings(d);
+}
 
 let drawNightClock = (d) => {
   g.clear();
-    rotate = true;
-    g.setColor(4);
-  //console.log("draw1: "+d.hr);
-    if (d.hr>9) drawDigit(0,Math.floor(d.hr/10), true);
-    drawDigit(1,Math.floor(d.hr%10), true);
-  //console.log("draw2: "+d.min);
-    drawDigit(2,Math.floor(d.min/10), true);
-    drawDigit(3,Math.floor(d.min%10), true);
-    g.fillCircle(40, 80,2);
-    g.fillCircle(24, 80,2);
-    let b = E.getBattery();
-    for(let c=0; c<5; c++) {
-      if(b > c*20) g.drawCircle(16+12*c, 8, 4);
-      //else g.drawCircle(14+12*c,8,4);
-    }
-    g.flip();
+  rotate = true;
+  inAlarm = true; // no buzzing please
+  g.setColor("#800000");
+  setScale(0.8, 0.8);
+//console.log("draw1: "+d.hr);
+  if (d.hr>9) drawDigit(0,Math.floor(d.hr/10), true);
+  drawDigit(1,Math.floor(d.hr%10), true);
+//console.log("draw2: "+d.min);
+  drawDigit(2,Math.floor(d.min/10), true);
+  drawDigit(3,Math.floor(d.min%10), true);
+  g.fillCircle(40, 80,2);
+  g.fillCircle(24, 80,2);
+  let b = E.getBattery();
+  for(let c=0; c<5; c++) {
+    if(b > c*20) g.drawCircle(16+12*c, 8, 4);
+    //else g.drawCircle(14+12*c,8,4);
+  }
 }
+
+const scrs=[ drawCoolClock, drawNightClock];
+let scridx = 0;
 
 function clock() {
   //logD('checkClock START');
   let d=Date().toString().split(' ');
+  
   let dt= {
     niceDate: Date().toString().substr(0,10),
     tm: d[4].substring(0,5),
@@ -268,7 +282,7 @@ function clock() {
   if (dt.hr === 0) dt.hr = 12;
   dt.min = parseInt(dt.min);
 
-  drawDayClock(dt);
+  scrs[scridx](dt);
 }
 
 let ival1 = 0; 
@@ -281,6 +295,7 @@ ival1 = wOS.on("lcdPower", (on)=>{
 
    };
 });
+
 // IF NOT NIGHT MODE
 ival2 = setInterval(()=> {
   // what to show down below
@@ -304,7 +319,7 @@ wOS.UI.on("longpress", () => {
   if(wOS.awake) {
     showMsg('',''); // clear until next tidbit
     if(inAlarm) {
-      inAlarm = false; lastTime=''; 
+      inAlarm = false; 
       showNotes();
     } else {
       //inNotes = !inNotes;
@@ -314,6 +329,12 @@ wOS.UI.on("longpress", () => {
 });
   
 wOS.UI.on("tap", () => {
+});
+
+wOS.UI.on("dbltap", () => {
+  // fancy round robin increment ;-)
+  ++scridx >= scrs.length ? scridx = 0 : scridx;
+  g.clear(); lastTime = "";
 });
 
 showNotes();

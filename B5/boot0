@@ -5,3 +5,4 @@ function KickWd(){
 var wdint=setInterval(KickWd,2000);
 E.enableWatchdog(15, false);
 const _S = require("Storage");
+eval(_S.read("B5.drivers.js"));

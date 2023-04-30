@@ -20,7 +20,8 @@ global.wOS = {
               digitalPulse(wOS.BUZZPIN,false,v);
               resolve();
           } else {
-              analogWrite(wOS.BUZZPIN,i);
+              //analogWrite(wOS.BUZZPIN,i);
+              wOS.BUZZPIN.set();
               setTimeout(()=>{wOS.BUZZPIN.reset();resolve();},v);
           }
       });
@@ -29,6 +30,8 @@ global.wOS = {
 
 //screen brightness function
   brightness: (v) => {
+    // analog buzz requies a hard reset for BKLT -- ??
+    wOS.BKLT.reset();
     analogWrite(wOS.BKLT,v*0.7);
   },
 
