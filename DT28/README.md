@@ -1,3 +1,7 @@
+Display: ST7789 240x240
+Touch: CSTx16 (I2C addr 0x15)
+Accel: 
+
 Here's the (Espruino) pinouts I know:
 
 | Pin No.  | Description |
@@ -8,6 +12,8 @@ Here's the (Espruino) pinouts I know:
 |D9 | SPI Shared CLK |
 |D12| LCD CS |
 |D16| backlight (1 == on, accepts analogWrite)|
+|D18| I2C SCL |
+|D19| I2C CLK |
 |D22| battery on charger (0 = on charger) |
 |D25| buzzer (1 == on, 0 == off, accepts analogWrite)|
 |D26| LCD DC |
