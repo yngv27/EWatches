@@ -25,7 +25,7 @@ NOTES
 =====
 Pins discovered on LCD connector:
 Inside row:  D4, D5, D6, D9, D27, D26
-Outside row: 
+Outside row: D33-D36 (CST816S I2C touch panel)
 D11 - sometimes
 
 Pins discovered on HRS/BTN connector:
