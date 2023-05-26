@@ -92,6 +92,7 @@ ACCEL = require("bma421.js").connect(wOS.I2C);
 ACCEL.init();
 //ACCEL.on("faceup",()=>{if (!wOS.awake) wOS.wake();});
 //console.log("loaded accel");
+LED = require("~SGM31324.js").setup(wOS.I2C);
 
 wOS.ticker = setInterval(wOS.tick,1000);
 
@@ -105,7 +106,7 @@ E.getBattery = function (){
   // lo = .52 hi = .59
     return Math.floor((analogRead(wOS.BATLVL)-0.52)*1428);
 };
-E.setTimeZone(-5);
+E.setTimeZone(-4);
 wOS.getStepCount = ()=>{ return ACCEL.getSteps(); };
 wOS.resetStepCounter = () => { ACCEL.resetSteps(); }; 
 

@@ -24,7 +24,7 @@ function clock() {
   // battery
   if(!_C.inMsg) {
     // even/odd minute: draw battery or step count
-    if(m % 2) {
+    if((m % 60) == 0) {
         /*
       s = E.getBattery().toString();
       LCD.setDigitRaw(0, 0x5450);  //b
@@ -48,27 +48,32 @@ function clock() {
 }
 
 function drawDate() {
-  // cool date (JA)
-  //LCD.setDigitRaw(9, 0x54);
-  //LCD.setDigitRaw(10, 0x5415);
-  //LCD.setDigitRaw(9, 0x5401);
-  //LCD.setDigitRaw(10, 0x5441);
-  // crappy "M"
-  LCD.setDigitRaw(9, 0x4405);
-  LCD.setDigitRaw(10, 0x0415);
+  let mon = Date().getMonth()+1;
+  LCD.setDigit(9, Math.floor(mon/10));
+  LCD.setDigit(10, mon%10);
   let dt = Date().getDate();
-  LCD.setDigit(11, Math.floor(dt/10), false);
+  LCD.setDigit(11, Math.floor(dt/10), true);
   LCD.setDigit(12, dt%10);
 }
 
-require("FontDylex7x13").add(Graphics);
-g.setFont("Dylex7x13",2).setFontAlign(0,0);
+//require("FontDylex7x13").add(Graphics);
+//g.setFont("Dylex7x13",2).setFontAlign(0,0);
 
 function showMsg(m) {
   LCD.setEverything('?????'); // clear the bottom field of 5
   g.setColor(0.75,0.75,1).fillRect(0, 165, 239, 239).setColor(0);
-  m.split('|').forEach((s,i)=>{g.drawString(s,120, 178+i*20, false);});
-  [400,800,1200,2000,2400].forEach((t) => {setTimeout(Bangle.buzz, t, 175);});
+  let y=170;
+  let mstr = ''; 
+  m.split(' ').forEach((w)=>{
+    if(g.stringWidth(mstr+w) > 240 || w == '|') {
+      g.drawString(mstr, 120, y);
+      mstr='';
+      y+=g.getFontHeight();
+    }
+    if(w != '|') mstr += w + ' ';
+  });
+  g.drawString(mstr, 120, y);
+//  m.split('|').forEach((s,i)=>{g.drawString(s,120, 178+i*20, false);});
   _C.inMsg = true;
 }
 
