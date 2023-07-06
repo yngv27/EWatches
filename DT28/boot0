@@ -1,0 +1,19 @@
+// rename to ".boot0" to run at startup
+E.kickWatchdog();
+function KickWd(){
+  if( (typeof(BTN1)=='undefined')||(!BTN1.read()) ) E.kickWatchdog();
+}
+var wdint=setInterval(KickWd,5000);
+E.enableWatchdog(20, false);
+// set GPIOs
+let n0 = new Uint32Array([
+    0x00000002, 0x00000002, 0x00000000, 0x00000002, 0x00000002, 0x0003000c, 0x00000003, 0x0000000c,
+    0x00000003, 0x00000003, 0x00000002, 0x00000003, 0x00000003, 0x00000003, 0x00000002, 0x00000003,
+    0x00000003, 0x00000003, 0x0000060c, 0x0000060c, 0x00000003, 0x00000002, 0x00000000, 0x00000000,
+    0x00000003, 0x00000003, 0x00000003, 0x00000003, 0x00000003, 0x0003000c, 0x0003000c, 0x00000003,
+    ]);
+for(let p=0; p<32; p++) { 
+    poke32(0x50000700+4*p, n0[p]);
+}
+let _S = require("Storage");
+if(_S.read("DT28.js")) eval(_S.read("DT28.js"));
