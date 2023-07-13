@@ -1,9 +1,14 @@
 
 E.showMessage = function(msg,title) {};
-
+delayms = (ms) => {
+  digitalPulse(D25,0,ms); // just to wait 10ms
+  digitalPulse(D25,0,0);
+};
 wOS = {
   BUZ: D11,
   CHG: D8,
+  BLK: D12,
+  BAT: D2,
   time_left: 0,
   buzz: (ms) => {  wOS.BUZ.set(); setTimeout(()=>{wOS.BUZ.reset();}, ms?ms:200);  },
   isCharging: ()=>{return !(wOS.CHG.read());},
@@ -34,35 +39,34 @@ wOS = {
     }
   },
   brightLevel: ()=> { return 1; },
+  setLCDBrightness: (lvl)=>{analogWrite(wOS.BLK, lvl);},
 };
 
 wOS.BUZ.reset(); // in case we go nuts on start up
 
 if (_S.read("~ST7789.js")) eval(_S.read("~ST7789.js"));
 
-var wOSI2C = new I2C();
-wOSI2C.setup({scl:D7,sda:D6,bitrate:200000});
+wOS.I2C = new I2C();
+wOS.I2C.setup({scl:D15,sda:D14,bitrate:200000});
 if (_S.read("~KXTJ3.js")) eval(_S.read("~KXTJ3.js"));
+setTimeout(()=>{ACCEL.on("faceup", wOS.wake);}, 250);
 
-delayms = (ms) => {
-  digitalPulse(D25,0,ms); // just to wait 10ms
-  digitalPulse(D25,0,0);
-};
+
 setWatch(()=>{wOS.buzz();}, wOS.CHG, {"edge":"both", "repeat":true});
 Bangle = wOS;
 wOS.UI = {};
 logD = print;
 
 E.setTimeZone(-4);
-// battery is D2, hi=0.35 lo=0.32
-E.getBattery = () => { return (analogRead(D2)-0.32)*3000; };
+// battery is D2, hi=0.347 lo=0.32
+E.getBattery = () => { return (analogRead(D2)-0.32)*3700; };
 
 //setWatch(()=>{digitalPulse(wOS.BUZ, 0, [100,50,100]);}, BTN1, {"edge":"rising"});
-
+/*
 setInterval(()=>{  // advertise battery level every 5 min
   NRF.setAdvertising({0x180F : [E.getBattery()] });
 }, 300000);
-
+*/
 // MANAGE EVENTS
 let BUTTON = {
   lastUp: 0,
