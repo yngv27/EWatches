@@ -21,7 +21,7 @@ wOS = {
     wOS.isAwake = false;
   },
   wake: ()=>{
-    wOS.ticker = 10;
+    wOS.ticker = 7;
     if(wOS.isAwake) return;
     g.lcd_wake();
     wOS.setLCDBrightness(wOS.brightLevel());
@@ -58,8 +58,8 @@ wOS.UI = {};
 logD = print;
 
 E.setTimeZone(-4);
-// battery is D2, hi=0.347 lo=0.32
-E.getBattery = () => { return (analogRead(D2)-0.32)*3700; };
+// battery is D2, hi=0.347 lo=0.275
+E.getBattery = () => { return (analogRead(D2)-0.275)*1388; };
 
 //setWatch(()=>{digitalPulse(wOS.BUZ, 0, [100,50,100]);}, BTN1, {"edge":"rising"});
 /*
