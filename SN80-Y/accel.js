@@ -1,6 +1,6 @@
 // TEMPORARY: This is shared IO/CLK with SPI display AND Flash! Put check in to make sure all CS are LOW
 
-/ Genuine LIS3DH!
+// Genuine LIS3DH!
 let ACCELPIN = D26;
 let ACCELI2C = new I2C();
 ACCELI2C.setup({scl:D20,sda:D17,bitrate:200000});
