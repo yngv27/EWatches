@@ -46,6 +46,11 @@ setWatch(()=>{
 E.getBattery = () => { return Math.floor((analogRead(wOS.BAT) - 0.255) * 1923); };
 E.setTimeZone(-4);
 
+NRF.setAdvertising({
+  0x180F : [E.getBattery()] // Service data 0x180F = 95
+});
+  
+
 ACCEL.on("faceup",()=>{
   if(! wOS.awake) wOS.wake();
   //else wOS.time_left = 10;
