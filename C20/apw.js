@@ -22,15 +22,6 @@ function notify() {
   [300,800].forEach((t) => {setTimeout(Bangle.buzz, t, 250, 0.5);});
 }
 
-const _C = {
-  CYAN: "#80FFFF",
-  WHITE: "#FFFFFF",
-  YHT: g.getHeight(),
-  XWID: 130,
-  XMID: 130/2, 
-  YMID: g.getHeight()/2,
-};
-
 // to be overridden
 let showMsg = (title, msg) => {};
 
@@ -94,22 +85,6 @@ let schAls = scheduleAlarms;
 ********************************************* END ALARMS *******************************
 */
 
-
-const scrs=[ "watch1.js", "watch2.js", "analog1.js"];
-let scridx = 0;
-let W={};
-
-let nextScreen = () => {
-  // fancy round robin increment ;-)
-  ++scridx >= scrs.length ? scridx = 0 : scridx;
-  g.clear(); lastTime = "";
-  W=require(scrs[scridx]);
-  W.drawBkgd();
-  showMsg = W.showMsg;
-  clock();
-  showNotes();
-};
-
 function clock() {
   //logD('checkClock START');
   let d=Date().toString().split(' ');
@@ -142,6 +117,27 @@ function clock() {
   W.drawClock(dt);
   W.drawData(dt);
 }
+
+const scrs=[ "watch1.js"]; //, "watch2.js", "night.js", "analog1.js"];
+let scridx = -1;
+let W={};
+
+let nextScreen = () => {
+  if(typeof(W) != "undefined" && typeof(W.stop) != "undefined") W.stop();
+  // fancy round robin increment ;-)
+  ++scridx >= scrs.length ? scridx = 0 : scridx;
+  g.clear(); lastTime = "";
+  W=require(scrs[scridx]);
+  W.start();
+  showMsg = W.showMsg;
+  // shutdown the other intervals, restart the new ones
+  clock();
+  showNotes();
+};
+// make sure it's ready
+nextScreen();
+
+
 
 let ival1 = 0; 
 let ival2 = 0;
