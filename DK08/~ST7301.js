@@ -163,6 +163,7 @@ switch(bpp){
     } else g.sc(c);
     */
     if(c >= 0 && c <= 0x3f) pal[1] = c; g.sc(1);
+    return g;
   }; break;
   case 4: pal=
     // CGA
@@ -174,6 +175,7 @@ switch(bpp){
     c1=pal[1]; //save color 1
     g.setColor=function(c){ //change color 1 dynamically
     if(c >= 0 && c <= 0x3f) pal[1] = c; g.sc(1);
+    return g;
   }; break;
     case 6:
     pal = new Uint8Array(64);

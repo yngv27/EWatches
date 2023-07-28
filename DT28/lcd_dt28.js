@@ -1,0 +1,36 @@
+function ST7789() {
+	    var LCD_WIDTH = 240;
+	    var LCD_HEIGHT = 240;
+	    var XOFF = 0;
+	    var YOFF = 0;
+	    var INVERSE = 1;
+	    var cmd = lcd_spi_unbuf.command;
+
+	    function dispinit(rst,fn) {
+  //SetupPins12_27_26();
+  //delayms(10);
+            function delayms(d) {var t = getTime()+d/1000; while(getTime()<t);}
+	            if (rst) {
+	                digitalPulse(rst,0,100);
+	            } else {
+	                cmd(0x01); //ST7735_SWRESET: Software reset, 0 args, w/delay: 150 ms delay
+						            }
+  cmd(0x11);
+  delayms(0x78);
+  cmd(0x36, 0);
+  cmd(0x3a ,0x53);
+  cmd(0xb2, [0xc , 0xc , 0 , 0x33 , 0x33]);
+  cmd(0xb7, 0x35);
+  cmd(0xbb ,0x1e);
+  cmd(0xc0 ,0x2c);
+  cmd(0xc2);
+  cmd(0xc3, 0xb);
+  cmd(0xc4 ,0x20);
+  cmd(0xc6 ,0xf);
+  cmd(0xd0, [0xa4, 0xa1]);
+  cmd(0xe0, [0xd0, 10 , 0xf , 10 , 10 , 0x26 , 0x35 , 0x3f , 0x4d , 0x29 , 0x14 , 0x14 , 0x2e , 0x32]);
+  cmd(0xe1, [0xd0 , 10 , 0x10 , 0xb , 9 , 0x25 , 0x36 , 0x40 , 0x4c , 0x28 , 0x14 , 0x14 , 0x2d , 0x32]);
+  cmd(0x29, 0);
+  cmd(0x21, 0);
+  //FUN_0005d14c();
+  delayms(200);

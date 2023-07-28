@@ -31,7 +31,7 @@ function ST7789() {
         //GCTRL: Gate control
         cmd(0xb7, 0x00);
         // VCOMS: VCOMS setting
-        cmd(0xbb, 0x3e);
+        cmd(0xbb, 0x1e);
         //LCMCTRL: CM control
         cmd(0xc0, 0xc0);
         //VDVVRHEN: VDV and VRH command enable

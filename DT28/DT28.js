@@ -1,22 +1,24 @@
-D23.mode("input_pullup"); // charge finished
 
 E.showMessage = function(msg,title) {};
 delayms = (ms) => {
   digitalPulse(D25,0,ms); // just to wait 10ms
   digitalPulse(D25,0,0);
 };
+
+const BTN2 = D30;
+pinMode(BTN2, "input_pull")
 wOS = {
-  BUZ: D6,
-  CHG: D24,
-  BKL: D13,
-  BAT: D5,
+  BUZ: D25,
+  CHG: D22,
+  BLK: D16,
+  BAT: D2,
   time_left: 0,
   buzz: (ms) => {  wOS.BUZ.set(); setTimeout(()=>{wOS.BUZ.reset();}, ms?ms:200);  },
-  isCharging: ()=>{return wOS.CHG.read();},
+  isCharging: ()=>{return !(wOS.CHG.read());},
   ticker: 0,
   tikint: 0,
   sleep: ()=> {
-    //g.lcd_sleep();
+    g.lcd_sleep();
     wOS.setLCDBrightness(0);
     wOS.emit("sleep");
     wOS.isAwake = false;
@@ -24,7 +26,7 @@ wOS = {
   wake: ()=>{
     wOS.ticker = 7;
     if(wOS.isAwake) return;
-    //g.lcd_wake();
+    g.lcd_wake();
     wOS.setLCDBrightness(wOS.brightLevel());
     if(!wOS.tikint) wOS.tikint = setInterval(wOS.tick, 1000);
     wOS.emit("wake");
@@ -43,19 +45,21 @@ wOS = {
     let c=Math.floor(Date().getHours()/3);
     return [0.1,0.5,0.7,0.99][c > 3 ? 7-c : c]; 
   },
-  setLCDBrightness: (lvl)=>{analogWrite(wOS.BKL, lvl);},
+  setLCDBrightness: (lvl)=>{analogWrite(wOS.BLK, lvl);},
 };
 
 wOS.BUZ.reset(); // in case we go nuts on start up
 
-if (_S.read("~ST7301.js")) eval(_S.read("~ST7301.js"));
+if (_S.read("~ST7789.js")) eval(_S.read("~ST7789.js"));
 
-//wOS.I2C = new I2C();
-//wOS.I2C.setup({scl:D15,sda:D14,bitrate:200000});
-if (_S.read("~BMA253.js")) eval(_S.read("~BMA253.js"));
-//ACCEL.on("faceup", wOS.wake);
-
-
+/*
+wOS.I2C = new I2C();
+wOS.I2C.setup({scl:D15,sda:D14,bitrate:200000});
+if (_S.read("~KXTJ3.js")) eval(_S.read("~KXTJ3.js"));
+//setTimeout(()=>{
+  ACCEL.on("faceup", wOS.wake);
+//}, 250);
+*/
 
 setWatch(()=>{wOS.buzz();}, wOS.CHG, {"edge":"both", "repeat":true});
 Bangle = wOS;
@@ -63,14 +67,11 @@ wOS.UI = {};
 logD = ()=>{};
 
 E.setTimeZone(-4);
-// battery is D5, hi=? lo=??
-E.getBattery = () => { 
-   let l=3.5,h=4.19;
-    let v=4.20/0.29*analogRead(D5);
-    if(v>=h)return 100;
-    if(v<=l)return 0;
-    return Math.floor(100*(v-l)/(h-l));
-  }
+// battery is D2, hi=0.70 lo=0.65
+E.getBattery = () => { return (analogRead(D2)-0.65)*2000; };
+NRF.setAdvertising({
+    0x180F : [E.getBattery()] // Service data 0x180F = 95
+  });
 wOS.setStepCount = (n) => {};
 wOS.getStepCount = () => { return 0; };
 

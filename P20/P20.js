@@ -1,7 +1,32 @@
-// P20 startup code
+/* P20 startup code
+** Custom pin setup for this watch
+*/
+
 eval(_S.read("lcd.js"));
+g = GC9A01({SCK:D8,IO: D9,DC:D6,CS:D14, RST:D7});
+ 
+pinMode(D15, "output");
+pinMode(D16, "output");
+D15.write(1);
+D16.write(1);
+pinMode(D5, "output");
+D5.write(0);
+//D23.write(0); ?? D24?
+// set CSs high
+//D14.set();
+//D20.set();
+
 eval(_S.read("accel.js"));
-eval(_S.read("touch.js"));
+//let i2c = new I2C();
+//i2c.setup ({sda: D15, scl: D16});
+//ACCEL = SC7A20({I2C: i2c, ADDR: 0x18, INT: D5});
+
+//eval(_S.read("touch.js"));
+//i2c = new I2C();
+//i2c.setup ({sda: D10, scl: D11});
+//TC.init({I2C: i2c, ADDR: 0x15, INT: D12, RST:D13});
+TC = { stop: ()=>{} };
+
 eval(_S.read("hrs.js")); //just shuts down the LED
 wOS = {
   BKL: D4,
@@ -42,18 +67,20 @@ wOS = {
 setWatch(()=>{
   wOS.buzz();
 }, wOS.CHG, {"edge": "both", "repeat":true});
-// full: 0.307. empty: 0.255
-E.getBattery = () => { return Math.floor((analogRead(wOS.BAT) - 0.255) * 1923); };
+// full: 0.317. empty: 0.255 Multiplicant: 100/diff
+E.getBattery = () => { return Math.floor((analogRead(wOS.BAT) - 0.255) * 1612); };
 E.setTimeZone(-4);
 
 NRF.setAdvertising({
   0x180F : [E.getBattery()] // Service data 0x180F = 95
 });
   
-
 ACCEL.on("faceup",()=>{
   if(! wOS.awake) wOS.wake();
   //else wOS.time_left = 10;
 });
 TC.stop();
 Bangle = wOS;
+
+//wOS.on("wake",()=>{print("WAKEY");});
+//wOS.on("tick",()=>{print(`TICK`);});
