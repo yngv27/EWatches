@@ -4,9 +4,6 @@ delayms = (ms) => {
   digitalPulse(D25,0,ms); // just to wait 10ms
   digitalPulse(D25,0,0);
 };
-
-const BTN2 = D30;
-pinMode(BTN2, "input_pull")
 wOS = {
   BUZ: D25,
   CHG: D22,
@@ -51,15 +48,8 @@ wOS = {
 wOS.BUZ.reset(); // in case we go nuts on start up
 
 if (_S.read("~ST7789.js")) eval(_S.read("~ST7789.js"));
-
-/*
-wOS.I2C = new I2C();
-wOS.I2C.setup({scl:D15,sda:D14,bitrate:200000});
-if (_S.read("~KXTJ3.js")) eval(_S.read("~KXTJ3.js"));
-//setTimeout(()=>{
-  ACCEL.on("faceup", wOS.wake);
-//}, 250);
-*/
+if (_S.read("~SC7A20.js")) eval(_S.read("~SC7A20.js"));
+ACCEL.on("faceup", wOS.wake);
 
 setWatch(()=>{wOS.buzz();}, wOS.CHG, {"edge":"both", "repeat":true});
 Bangle = wOS;
@@ -67,21 +57,17 @@ wOS.UI = {};
 logD = ()=>{};
 
 E.setTimeZone(-4);
-// battery is D2, hi=0.70 lo=0.65
-E.getBattery = () => { return (analogRead(D2)-0.65)*2000; };
-NRF.setAdvertising({
-    0x180F : [E.getBattery()] // Service data 0x180F = 95
-  });
+// battery is D2, hi=0.68 lo=0.58
+E.getBattery = () => { return (analogRead(D2)-0.58)*1000; };
 wOS.setStepCount = (n) => {};
 wOS.getStepCount = () => { return 0; };
 
 
-//setWatch(()=>{digitalPulse(wOS.BUZ, 0, [100,50,100]);}, BTN1, {"edge":"rising"});
-/*
+//setWatch(wOS.wake, BTN2, {"edge":"rising"});
 setInterval(()=>{  // advertise battery level every 5 min
   NRF.setAdvertising({0x180F : [E.getBattery()] });
 }, 300000);
-*/
+
 // MANAGE EVENTS
 let BUTTON = {
   lastUp: 0,
