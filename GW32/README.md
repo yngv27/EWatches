@@ -1,3 +1,5 @@
+NOTE: Back of the watch comes off easily via screws. SWD pins are located under the battery **SWCLK and SWDIO are mislabeled!** SWCLK is actually SWDIO and vice versa!
+
 Display: GC9A01 240x240 16-bit, D25 must be set before init()
 
 Touch: IT7529 (I2C addr 0x46)
