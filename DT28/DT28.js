@@ -4,6 +4,9 @@ delayms = (ms) => {
   digitalPulse(D25,0,ms); // just to wait 10ms
   digitalPulse(D25,0,0);
 };
+
+const BTN2 = D30;
+pinMode(BTN2, "input_pullup")
 wOS = {
   BUZ: D25,
   CHG: D22,
@@ -57,17 +60,23 @@ wOS.UI = {};
 logD = ()=>{};
 
 E.setTimeZone(-4);
-// battery is D2, hi=0.68 lo=0.58
-E.getBattery = () => { return (analogRead(D2)-0.58)*1000; };
+// battery is D2, hi=0.677 lo=0.617
+E.getBattery = () => { return (analogRead(D2)-0.65)*2000; };
+setInterval(()=>{
+  NRF.setAdvertising({
+    0x180F : [E.getBattery()] // Service data 0x180F = 95
+  });
+}, 300000);
 wOS.setStepCount = (n) => {};
 wOS.getStepCount = () => { return 0; };
 
-
-//setWatch(wOS.wake, BTN2, {"edge":"rising"});
+setWatch(wOS.wake, BTN2, {"edge":"rising"});
+//setWatch(()=>{digitalPulse(wOS.BUZ, 0, [100,50,100]);}, BTN1, {"edge":"rising"});
+/*
 setInterval(()=>{  // advertise battery level every 5 min
   NRF.setAdvertising({0x180F : [E.getBattery()] });
 }, 300000);
-
+*/
 // MANAGE EVENTS
 let BUTTON = {
   lastUp: 0,

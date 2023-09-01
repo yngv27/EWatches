@@ -31,15 +31,15 @@ function init() {
 
     drawString: (str, x, y) => {
       let _lf_ch = {
-        "A":new Uint8Array([2,01,10,21,1,21,22]),
+        "A":new Uint8Array([2,1,10,21,1,21,22]),
         "C":new Uint8Array([20,10,1,12,22]),
-        "B":new Uint8Array([0,10,11,1,21,22,02,0]),
+        "B":new Uint8Array([0,10,11,1,21,22,2,0]),
         "D":new Uint8Array([0,10,21,12,2,0]),
         "E":new Uint8Array([20,0,1,11,1,2,22]),
         "F":new Uint8Array([20,0,1,11,1,2]),
         "G":new Uint8Array([21,22,2,0,20]),
         "H":new Uint8Array([0,2,1,21,20,22]),
-        "I":new Uint8Array([0,20,10,12,02,22]),
+        "I":new Uint8Array([0,20,10,12,2,22]),
         "J":new Uint8Array([20,22,2,1]),
         "K":new Uint8Array([0,2,1,11,20,11,22]),
         "L":new Uint8Array([0,2,22]),
@@ -49,19 +49,19 @@ function init() {
         "P":new Uint8Array([2,0,20,21,1]),
         "Q":new Uint8Array([22,2,0,20,22,11]),
         "R":new Uint8Array([2,0,20,21,1,11,22]),
-        "S":new Uint8Array([20,0,1,21,22,02]),
+        "S":new Uint8Array([20,0,1,21,22,2]),
         "T":new Uint8Array([0,20,10,12]),
         "U":new Uint8Array([0,2,22,20]),
         "V":new Uint8Array([0,12,20]),
         "W":new Uint8Array([0,2,11,22,20]),
         "X":new Uint8Array([0,22,11,20,2]),
         "Y":new Uint8Array([0,11,20,11,12]),
-        "Z":new Uint8Array([0,20,02,22]),
+        "Z":new Uint8Array([0,20,2,22]),
 
-        "0":new Uint8Array([2,0,20,22,02,20]),
+        "0":new Uint8Array([2,0,20,22,2,20]),
         "1":new Uint8Array([10,12]),
         "2":new Uint8Array([0,20,21,1,2,22]),
-        "3":new Uint8Array([0,20,21,01,21,22,02]),
+        "3":new Uint8Array([0,20,21,1,21,22,2]),
         "4":new Uint8Array([0,1,21,20,22]),
         "5":new Uint8Array([20,0,1,21,22,2]),
         "6":new Uint8Array([20,0,1,21,22,2,1]),
@@ -207,7 +207,7 @@ XWID: g.getWidth(),
 XMID: g.getWidth()/2, 
 YMID: g.getHeight()/2,
 };
-wOS.BLK.set();
+wOS.BKL.set();
 exports.drawBkgd();
 let dt = {hr:12, min:35, niceDate: "Sun Jul 12"};
 exports.drawClock(dt);
