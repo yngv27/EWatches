@@ -79,8 +79,8 @@ ACCEL.isFaceUp = () => {
   };
 setTimeout(()=>{
     setInterval(()=>{
-        if(ACCEL.isFaceUp() && !wOS.isAwake) {wOS.wake(); wOS.emit("faceup")};
-    }, 500);    
+        if(ACCEL.isFaceUp()) {wOS.wake();};
+    }, 300);    
 }, 3000);
 //ACCEL.on("faceup",()=>{if (!wOS.awake) wOS.wake();});
 //console.log("loaded accel");
