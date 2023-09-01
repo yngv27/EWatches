@@ -22,6 +22,7 @@ let cx = (m) => {
 return Math.floor(Math.sin(Math.PI * m/30) * 80);
 };
                
+/*
 let xS=.8,yS=.8;
 const startX=[10,45,10,45],startY=[18,18,80,80],nmX=[16,42,88,126],nmY=[12,12,12,12];
 let rotate=!1;function setScale(t,r){xS=t,yS=r}
@@ -42,6 +43,7 @@ function drawDigit(t,r,n){
   let a=(n?nmX:startX)[t];t=(n?nmY:startY)[t];
   //drawScaledPoly([d0,d1,d2,d3,d4,d5,d6,d7,d8,d9][r],a,t)}
   drawScaledPoly(darr[r],a,t);}
+  */
 /*
 let drawMin = (m) => {
   g.setColor(7);
@@ -155,7 +157,7 @@ let scheduleAlarms = () => {
 };
 //loadAlarms();
 var la = loadAlarms;
-let schAls = (als) => {_Alarms = als; scheduleAlarms(); };
+let schAls = (als) => {_Alarms = als; scheduleAlarms(); delete(_Alarms)};
 
 /*
 ********************************************* END ALARMS *******************************
