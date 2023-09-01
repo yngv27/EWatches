@@ -84,7 +84,7 @@ BMA421.prototype.loadConfig = function () {
 //initialise config
   this.writeReg(0x59,0x00); 
   for (var i=0;i<6144; i+=buffer_size) {
-    config = require("Storage").read("bma421_config.bin",i,buffer_size);
+    config = require("Storage").read("~CFG421.bin",i,buffer_size);
     this.i2c.writeTo(0x18,0x5B,  (i / 2) & 0x0F);
     this.i2c.writeTo(0x18,0x5C, (i / 2) >> 4);
     this.i2c.writeTo(0x18,0x5E,config);

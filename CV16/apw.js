@@ -9,10 +9,6 @@ g.setFont("Omnigo", 1).setFontAlign(0,-1);
 
 const scr = ["watch.js", "timer.js"];
 
-if(typeof(BTN2) === "undefined") BTN2 = D20;
-if(typeof(LCD)==="undefined")   
-    var LCD=require("seglcd.js").init({EN:D15, RST:D30, i2c:wOS.I2C});
-
 let scridx = 0;
 let SCR = require(scr[scridx]);
 SCR.start();

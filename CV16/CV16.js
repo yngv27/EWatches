@@ -1,7 +1,7 @@
 global.wOS = {
-  BATPIN: D19,
-  BATLVL: D31,
-  BUZZPIN: D16,
+  CHG: D19,
+  BAT: D31,
+  BUZ: D16,
   ON_TIME: 10,
   BRIGHT: 0.5,
   FACEUP:true,
@@ -15,11 +15,11 @@ global.wOS = {
           v = v? v : 100;
           if (!wOS.VIBRATE) resolve();
           else if (v<=50){
-              digitalPulse(wOS.BUZZPIN,false,v);
+              digitalPulse(wOS.BUZ,false,v);
               resolve();
           } else {
-              wOS.BUZZPIN.reset();
-              setTimeout(()=>{wOS.BUZZPIN.set();resolve();},v);
+              wOS.BUZ.reset();
+              setTimeout(()=>{wOS.BUZ.set();resolve();},v);
           }
       });
   },
@@ -81,18 +81,21 @@ setWatch(()=>{
   if(!wOS.awake) wOS.wake();
   wOS.buzz();
   wOS.emit("charging",wOS.isCharging());
-},wOS.BATPIN,{edge:"both",repeat:true,debounce:500});
+},wOS.CHG,{edge:"both",repeat:true,debounce:500});
 
 
-eval(_S.read("st7789.js"));
+eval(_S.read("~ST7789.js"));
 var g = ST7789();
 
 
-ACCEL = require("bma421.js").connect(wOS.I2C);
+ACCEL = require("~BMA421.js").connect(wOS.I2C);
 ACCEL.init();
 //ACCEL.on("faceup",()=>{if (!wOS.awake) wOS.wake();});
 //console.log("loaded accel");
 LED = require("~SGM31324.js").setup(wOS.I2C);
+if(typeof(BTN2) === "undefined") BTN2 = D20;
+if(typeof(LCD)==="undefined")   
+    var LCD=require("~SEGLCD.js").init({EN:D15, RST:D30, i2c:wOS.I2C});
 
 wOS.ticker = setInterval(wOS.tick,1000);
 
@@ -104,7 +107,7 @@ setWatch(() =>{
 
 E.getBattery = function (){
   // lo = .52 hi = .59
-    return Math.floor((analogRead(wOS.BATLVL)-0.52)*1428);
+    return Math.floor((analogRead(wOS.BAT)-0.52)*1428);
 };
 E.setTimeZone(-4);
 wOS.getStepCount = ()=>{ return ACCEL.getSteps(); };
