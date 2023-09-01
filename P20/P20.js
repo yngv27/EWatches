@@ -1,7 +1,7 @@
 /* P20 startup code
 ** Custom pin setup for this watch
 */
-
+const BTN2 = D26;
 eval(_S.read("lcd.js"));
 g = GC9A01({SCK:D8,IO: D9,DC:D6,CS:D14, RST:D7});
  
@@ -16,7 +16,7 @@ D5.write(0);
 //D14.set();
 //D20.set();
 
-eval(_S.read("accel.js"));
+eval(_S.read("~SC7A20.js"));
 //let i2c = new I2C();
 //i2c.setup ({sda: D15, scl: D16});
 //ACCEL = SC7A20({I2C: i2c, ADDR: 0x18, INT: D5});
@@ -35,16 +35,16 @@ wOS = {
   CHG: D3, 
   time_left: 0,
   tikint: 0,
-  awake: false,
+  isAwake: false,
   buzz: (ms)=> {wOS.BUZ.set(); setTimeout(()=>{wOS.BUZ.reset();},ms?ms:250);},
   isCharging: ()=>{return !wOS.CHG.read();},
   wake: ()=> {
     g.lcd_wake();
-    wOS.BKL.set(); // make this smarter
+    wOS.setLCDBrightness(wOS.brightLevel());
     wOS.emit("wake");
-    wOS.time_left = 10;
+    wOS.time_left = 7;
     //print(`TL: ${wOS.time_left}`);
-    wOS.awake = true;
+    wOS.isAwake = true;
     if(!wOS.tikint) wOS.tikint = setInterval(wOS.tick, 1000);
   },
   tick: (t)=> {
@@ -61,8 +61,14 @@ wOS = {
     TC.stop();
     wOS.BKL.reset();
     g.lcd_sleep();
-    wOS.awake = false;
-  }
+    wOS.isAwake = false;
+  },
+  brightLevel: ()=> { 
+    let c=Math.floor(Date().getHours()/3);
+    // custom to each watch: set brightness by time of day
+    return [0.001,0.025,0.5,0.99][c > 3 ? 7-c : c]; 
+  },
+  setLCDBrightness: (lvl)=>{analogWrite(wOS.BKL, lvl);},
 };
 setWatch(()=>{
   wOS.buzz();
@@ -70,17 +76,79 @@ setWatch(()=>{
 // full: 0.317. empty: 0.255 Multiplicant: 100/diff
 E.getBattery = () => { return Math.floor((analogRead(wOS.BAT) - 0.255) * 1612); };
 E.setTimeZone(-4);
+wOS.UI = {};
+logD = ()=>{};
 
-NRF.setAdvertising({
-  0x180F : [E.getBattery()] // Service data 0x180F = 95
-});
+setInterval(()=>{
+  NRF.setAdvertising({
+    0x180F : [E.getBattery()] // Service data 0x180F = 95
+  });
+}, 300000);
   
 ACCEL.on("faceup",()=>{
-  if(! wOS.awake) wOS.wake();
-  //else wOS.time_left = 10;
+  if(! wOS.isAwake) wOS.wake();
+  else wOS.time_left = 7;
 });
+
 TC.stop();
 Bangle = wOS;
+setWatch(()=>{
+  if(!wOS.isAwake) { wOS.wake();}
+}, BTN2, {edge:"rising", repeat: true});
 
-//wOS.on("wake",()=>{print("WAKEY");});
-//wOS.on("tick",()=>{print(`TICK`);});
+let BUTTON = {
+  lastUp: 0,
+  longpressTO: 0,
+  tapTO: 0,
+  longTime: 1000,
+  tapTime: 250,
+  dbltap: false,
+  watchUp: false,
+  upOpts: { repeat:false, edge:'falling', debounce:25},
+  dnOpts: { repeat:false, edge:'rising', debounce:25},
+};
+  
+const btnDown = (b) => {
+  //longpress = b.time;
+  if(BUTTON.tapTO) {
+    clearTimeout(BUTTON.tapTO);
+    BUTTON.tapTO = 0;
+    BUTTON.dbltap = true;
+  }
+  BUTTON.longpressTO = setTimeout(function(){
+    // long press behaviour
+    //BUTTON.emit('longpress');
+    wOS.UI.emit('longpress');
+    BUTTON.longpressTO = 0;
+    // ignore button up
+    BUTTON.watchUp = false;
+  }, BUTTON.longTime);
+  logD(`lpto=${BUTTON.longpressTO}`);
+  BUTTON.watchUp = true;
+  setWatch(btnUp, BTN1, BUTTON.upOpts);
+};
+
+const btnUp = (b) => {
+  if(BUTTON.longpressTO) {
+    clearTimeout(BUTTON.longpressTO);
+    BUTTON.longpressTO = 0;
+  } 
+  if(BUTTON.dbltap) {
+    //BUTTON.emit('dbltap');
+    wOS.UI.emit('dbltap');
+    BUTTON.dbltap = false;
+  } else if (BUTTON.watchUp) {
+    BUTTON.tapTO = setTimeout(function(){
+      // long press behaviour
+      //BUTTON.emit('tap');
+      wOS.UI.emit('tap');
+      BUTTON.tapTO = 0;
+      BUTTON.dbltap = false;
+    }, BUTTON.tapTime);
+    logD(`lpto=${BUTTON.tapTO}`);
+  }
+  BUTTON.lastUp = b.time;
+  setWatch(btnDown, BTN1, BUTTON.downOpts);
+};
+
+setWatch(btnDown, BTN1, BUTTON.downOpts);
