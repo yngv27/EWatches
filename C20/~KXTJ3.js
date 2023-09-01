@@ -27,6 +27,7 @@ ACCEL = {
     ACCEL.writeByte(0x1B,0x92);  //CNTL1 Off (top bit), low power, no DRDYE1, 2g , Wakeup=1
     delayms(30);
     ACCEL.readBytes(0x1A,1); // clear latched interrupt
+    /*
     setWatch(()=>{
       //print("INT!");
       var a = ACCEL.read();
@@ -41,6 +42,16 @@ ACCEL = {
       }
       ACCEL.readBytes(0x1A,1); // clear latched interrupt
     },ACCEL.INTPIN, {repeat: true, edge:"rising"});
+    */
+    setInterval(()=> {
+      var a = ACCEL.read();
+      //print(a);
+      if (ACCEL.step) E.stepCount(a.x,a.y,a.z);
+      //if ( (a.y>500 && a.y<1000 && a.z>-864 && a.z <226)) {
+      if((a.x < 15 || a.x > 240) && a.y > 10 && a.y < 45 && a.z > 190) {
+        ACCEL.emit("faceup");
+      }
+    }, 500);
     return id;  
   },
   read0:()=>{
