@@ -12,11 +12,14 @@ let _C = {
 function drawBkgd() {
   g.setBgColor(0.5,0.5,0.5).clear();
 }
+
 function clock() {
   let h = Date().getHours(), m = Date().getMinutes();
   //g.drawImage(_S.read("minHand2"), 120, 120, {rotate: Math.PI * m / 30});
   //g.drawImage(_S.read("hrHand2"), 120, 120, {rotate: Math.PI * (h * 60 + m) / 360});
-  LCD.setDigit(5, Math.floor(h/10));
+  h = h%12; // no 24 hour
+  if(h > 9)   LCD.setDigit(5, 1);
+  else LCD.setDigit(5, 15); // clear
   LCD.setDigit(6, h%10, true);
   _C.min10 = Math.floor(m/10);
   LCD.setDigit(7, _C.min10, true);
@@ -85,15 +88,16 @@ exports.start = () => {
   _C.clkint=setInterval(clock, 60000);
   clock();
   drawDate();
-
+/* save power
   _C.tikint = setInterval(()=>{
     LCD.setDigit(7, _C.min10, (Date().getSeconds() % 2) ? false : true);
   }, 1000);
+  */
 };
 
 exports.stop = () => {
     if(_C.clkint) clearInterval(_C.clkint);
-    if(_C.tikint) clearInterval(_C.tikint);
+    //if(_C.tikint) clearInterval(_C.tikint);
 };
 
 exports.click = () => {   
