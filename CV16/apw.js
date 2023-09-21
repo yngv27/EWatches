@@ -12,7 +12,7 @@ let SCR = require(scr[scridx]);
 SCR.start();
 
 setWatch(() => {
-  if(!wOS.awake) wOS.wake();
+  if(!wOS.isAwake) wOS.wake();
   else {
     SCR.stop();
     if(++scridx >= scr.length) scridx=0;

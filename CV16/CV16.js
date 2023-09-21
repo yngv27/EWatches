@@ -2,12 +2,12 @@ global.wOS = {
   CHG: D19,
   BAT: D31,
   BUZ: D16,
-  ON_TIME: 10,
+  ON_TIME: 8,
   BRIGHT: 0.5,
   FACEUP:true,
   VIBRATE:true,
-  awake : true,
-  time_left:10,
+  isAwake : true,
+  time_left:8,
   ticker:undefined,
   settings:undefined,
   buzz: function(v){
@@ -23,7 +23,7 @@ global.wOS = {
           }
       });
   },
-  isCharging:()=>{return !wOS.BATPIN.read();},
+  isCharging:()=>{return !wOS.CHG.read();},
 
 //screen brightness function
   brightness: (v) => {
@@ -37,7 +37,7 @@ global.wOS = {
   setLCDBrightness:(v)=>{wOS.BRIGHT=v; wOS.brightness(v);},
 
   sleep:() => {
-      wOS.awake = false;
+      wOS.isAwake = false;
       wOS.brightness(0);
       wOS.emit("lcdPower",false);
       g.flip(); //make sure finished with SPI before stopping it.
@@ -50,8 +50,9 @@ global.wOS = {
     wOS.brightness(blevel[Date().getHours()]/10);
   },
   wake:()=> {
-      wOS.awake = true;
       wOS.time_left = wOS.ON_TIME;
+      if(wOS.isAwake) return;
+      wOS.isAwake = true;
       g.lcd_wake();
       wOS.emit("lcdPower",true);
       wOS.bright();
@@ -59,11 +60,11 @@ global.wOS = {
   },
   setLCDPower:(b)=>{
       if (b){
-          if (wOS.awake) wOS.time_left = wOS.ON_TIME; else wOS.wake();
+          if (wOS.isAwake) wOS.time_left = wOS.ON_TIME; else wOS.wake();
       } else 
           wOS.sleep();
   },
-  isLCDOn:()=>{ return wOS.awake;},
+  isLCDOn:()=>{ return wOS.isAwake;},
   tick:()=>{
       wOS.time_left--;
       if (wOS.time_left<=0){
@@ -78,7 +79,7 @@ wOS.I2C = new I2C();
 wOS.I2C.setup({scl:D7,sda:D6,bitrate:200000});
 
 setWatch(()=>{
-  if(!wOS.awake) wOS.wake();
+  if(!wOS.isAwake) wOS.wake();
   wOS.buzz();
   wOS.emit("charging",wOS.isCharging());
 },wOS.CHG,{edge:"both",repeat:true,debounce:500});
@@ -90,7 +91,7 @@ var g = ST7789();
 
 ACCEL = require("~BMA421.js").connect(wOS.I2C);
 ACCEL.init();
-//ACCEL.on("faceup",()=>{if (!wOS.awake) wOS.wake();});
+//ACCEL.on("faceup",()=>{if (!wOS.isAwake) wOS.wake();});
 //console.log("loaded accel");
 LED = require("~SGM31324.js").setup(wOS.I2C);
 if(typeof(BTN2) === "undefined") BTN2 = D20;
@@ -100,7 +101,7 @@ if(typeof(LCD)==="undefined")
 wOS.ticker = setInterval(wOS.tick,1000);
 
 setWatch(() =>{
-  if(wOS.awake) {
+  if(wOS.isAwake) {
       wOS.showLauncher();
   } else  wOS.wake();
 },BTN1,{repeat:true,edge:"rising"});

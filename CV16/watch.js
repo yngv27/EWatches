@@ -18,6 +18,7 @@ function clock() {
   //g.drawImage(_S.read("minHand2"), 120, 120, {rotate: Math.PI * m / 30});
   //g.drawImage(_S.read("hrHand2"), 120, 120, {rotate: Math.PI * (h * 60 + m) / 360});
   h = h%12; // no 24 hour
+  if(!h) h=12;
   if(h > 9)   LCD.setDigit(5, 1);
   else LCD.setDigit(5, 15); // clear
   LCD.setDigit(6, h%10, true);
@@ -26,7 +27,7 @@ function clock() {
   LCD.setDigit(8, m%10);
   // battery
   if(!_C.inMsg) {
-    // even/odd minute: draw battery or step count
+    // draw battery on the hour, else step count
     if((m % 60) == 0) {
         /*
       s = E.getBattery().toString();
