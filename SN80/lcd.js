@@ -102,12 +102,5 @@ function GC9A01() {
   return connect({spi:SPI1, dc:D18, cs:D25, rst:D26});
 }
 
-wOS.brightness= function(v) {
-  v = Math.round(v/0.125);
-  v = v>7?7:v<0?0:v;
-  v=v>7?1:v;	
-  digitalWrite([D23,D22,D14],7-v);
-};
-
   
 g = GC9A01();

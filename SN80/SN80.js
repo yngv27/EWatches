@@ -7,7 +7,7 @@ wOS={
   BRIGHT:0.5,
   FACEUP:true,
   VIBRATE:true,
-  awake:true,
+  isAwake:true,
   time_left:10,
   ticker:undefined,
   settings:undefined,
@@ -40,7 +40,7 @@ wOS={
     wOS.settings=s;
     E.setTimeZone(wOS.timezone);},
   sleep:()=>{
-    wOS.awake=false;
+    wOS.isAwake=false;
     wOS.brightness(0);
     TC.stop();
     wOS.emit("lcdPower",false);
@@ -54,7 +54,8 @@ wOS={
     var b=(hrs >= ds && hrs<ls)?wOS.BRIGHT:(hrs >= ls && hrs<ns)?wOS.settings.lowbright:wOS.settings.nightbright;wOS.brightness(b);
   },
   wake:()=>{
-    wOS.awake=true;
+    if(wOS.isAwake) return;
+    wOS.isAwake=true;
     wOS.time_left=wOS.ON_TIME;
     TC.start();
     g.lcd_wake();
@@ -64,20 +65,18 @@ wOS={
   },
   setLCDPower:(b)=>{
     if(b){
-      if(wOS.awake) wOS.time_left=wOS.ON_TIME;
+      if(wOS.isAwake) wOS.time_left=wOS.ON_TIME;
       else wOS.wake();
     }else wOS.sleep();
   },
   isLCDOn:()=>{
-    return wOS.awake;
+    return wOS.isAwake;
   }
   ,
   tick:()=>{
     wOS.time_left --;
     if(wOS.time_left <= 0){
-      if(wOS.ticker)
-        wOS.ticker=clearInterval(wOS.ticker);
-      wOS.emit("sleep",true);
+      if(wOS.ticker) wOS.ticker=clearInterval(wOS.ticker);
       wOS.sleep();
     } else {
       wOS.emit("tick");
@@ -92,11 +91,18 @@ wOS.I2C=new I2C();
 wOS.I2C.setup({scl:D7,sda:D6,bitrate:200000});
 
 setWatch(()=>{
-  if(!wOS.awake)wOS.wake();
+  wOS.wake();
   wOS.emit("charging",wOS.isCharging());
 },wOS.BATPIN,{edge:"both",repeat:true,debounce:500});
 
 eval(_S.read("lcd.js"));
+
+wOS.brightness= function(v) {
+  v = Math.round(v/0.125);
+  v = v>7?7:v<0?0:v;
+  v=v>7?1:v;	
+  digitalWrite([D23,D22,D14],7-v);
+};
 
 wOS.bright();
 eval(_S.read("touch.js"));
@@ -105,19 +111,78 @@ TC.start();
 
 eval(_S.read("accel.js"));
 ACCEL.init(wOS.I2C, {"INTPIN": D8});
-ACCEL.on("faceup",()=>{if(!wOS.awake)wOS.wake();});
+ACCEL.on("faceup",()=>{wOS.wake();});
 
 wOS.ticker=setInterval(wOS.tick,1000);
 
 E.getBattery=function(){
-  var v=wOS.batV();v=v<3.7?3.7:v;return Math.floor((v-3.7)*200);
+  var v=wOS.batV();v=v<3.7?3.7:v; batt = Math.floor((v-3.7)*200); if(batt > 100) return 100; else return batt;
 };
+/*
 //wOS.showLauncher=function(){load("launch-sn80.js");};
 //eval(_S.read("menu-sn80.js"));
 //eval(_S.read("prompt-sn80.js"));
 //eval(_S.read("widgets-sn80.js"));
 wOS.btnWatches=[
-  setWatch(function(){if(wOS.awake)wOS.showLauncher();else wOS.wake();},BTN1,{repeat:1,edge:"falling"}),
+  setWatch(function(){if(wOS.isAwake)wOS.showLauncher();else wOS.wake();},BTN1,{repeat:1,edge:"falling"}),
 ];
-
+*/
 global.Bangle=wOS;
+wOS.UI={};
+
+let BUTTON = {
+  lastUp: 0,
+  longpressTO: 0,
+  tapTO: 0,
+  longTime: 1000,
+  tapTime: 250,
+  dbltap: false,
+  watchUp: false,
+  upOpts: { repeat:false, edge:'falling', debounce:25},
+  dnOpts: { repeat:false, edge:'rising', debounce:25},
+};
+  
+const btnDown = (b) => {
+  //longpress = b.time;
+  if(BUTTON.tapTO) {
+    clearTimeout(BUTTON.tapTO);
+    BUTTON.tapTO = 0;
+    BUTTON.dbltap = true;
+  }
+  BUTTON.longpressTO = setTimeout(function(){
+    // long press behaviour
+    //BUTTON.emit('longpress');
+    wOS.UI.emit('longpress');
+    BUTTON.longpressTO = 0;
+    // ignore button up
+    BUTTON.watchUp = false;
+  }, BUTTON.longTime);
+  logD(`lpto=${BUTTON.longpressTO}`);
+  BUTTON.watchUp = true;
+  setWatch(btnUp, BTN1, BUTTON.upOpts);
+};
+
+const btnUp = (b) => {
+  if(BUTTON.longpressTO) {
+    clearTimeout(BUTTON.longpressTO);
+    BUTTON.longpressTO = 0;
+  } 
+  if(BUTTON.dbltap) {
+    //BUTTON.emit('dbltap');
+    wOS.UI.emit('dbltap');
+    BUTTON.dbltap = false;
+  } else if (BUTTON.watchUp) {
+    BUTTON.tapTO = setTimeout(function(){
+      // long press behaviour
+      //BUTTON.emit('tap');
+      wOS.UI.emit('tap');
+      BUTTON.tapTO = 0;
+      BUTTON.dbltap = false;
+    }, BUTTON.tapTime);
+    logD(`lpto=${BUTTON.tapTO}`);
+  }
+  BUTTON.lastUp = b.time;
+  setWatch(btnDown, BTN1, BUTTON.downOpts);
+};
+
+setWatch(btnDown, BTN1, BUTTON.downOpts);
