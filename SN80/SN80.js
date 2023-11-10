@@ -3,12 +3,12 @@ wOS={
   BATVOLT: D31,
   BUZZPIN: D16,
   timezone: -4,
-  ON_TIME:10,
+  ON_TIME:7,
   BRIGHT:0.5,
   FACEUP:true,
   VIBRATE:true,
   isAwake:true,
-  time_left:10,
+  time_left:7,
   ticker:undefined,
   settings:undefined,
   buzz:(v)=>{
@@ -118,6 +118,11 @@ wOS.ticker=setInterval(wOS.tick,1000);
 E.getBattery=function(){
   var v=wOS.batV();v=v<3.7?3.7:v; batt = Math.floor((v-3.7)*200); if(batt > 100) return 100; else return batt;
 };
+
+wOS.steps = 0;
+wOS.getStepCount = () => {return wOS.steps;};
+wOS.setStepCount= (s) => {wOS.steps = s;};
+wOS.resetStepCounter = () => { wOS.setStepCount(0); };
 /*
 //wOS.showLauncher=function(){load("launch-sn80.js");};
 //eval(_S.read("menu-sn80.js"));
