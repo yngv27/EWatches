@@ -43,6 +43,15 @@ wOS = {
     return [0.1,0.5,0.7,0.99][c > 3 ? 7-c : c]; 
   },
   setLCDBrightness: (lvl)=>{analogWrite(wOS.BLK, lvl);},
+  setLCDPower:(b)=>{
+    if(b){
+      if(wOS.isAwake) wOS.time_left=wOS.ON_TIME;
+      else wOS.wake();
+    }else wOS.sleep();
+  },
+  isLCDOn:()=>{
+    return wOS.isAwake;
+  }
 };
 
 wOS.BUZ.reset(); // in case we go nuts on start up
