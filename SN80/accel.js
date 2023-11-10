@@ -20,11 +20,22 @@ var ACCEL = {
     ACCEL.writeByte(0x32,0x10); //threshold = 250 milli g's
     ACCEL.writeByte(0x33,0x01); //duration = 1 * 20ms
     ACCEL.writeByte(0x30,0x02); //XH interrupt 
+    /*
     pinMode(ACCEL.INTPIN,"input",false);
     setWatch(()=>{
        var  a = ACCEL.read();
        if (a.x > 220 && a.x < 250 && (a.y < 10 || a.y > 220) && a.z > 30 && a.z < 70) ACCEL.emit("faceup");
     },ACCEL.INTPIN,{repeat:true,edge:"rising",debounce:50});
+    */
+    setInterval(()=> {
+      var a = ACCEL.read();
+      //print(a);
+      if (ACCEL.step) E.stepCount(a.x,a.y,a.z);
+      //if ( (a.y>500 && a.y<1000 && a.z>-864 && a.z <226)) {
+      if((a.x > 220 && a.x < 250 && (a.y < 10 || a.y > 220) && a.z > 30 && a.z < 70) ) {
+        ACCEL.emit("faceup");
+      }
+    }, 500); 
     return id;
   },
   read0:()=>{
@@ -43,7 +54,8 @@ var ACCEL = {
   read: () => {
     var a = ACCEL.readBytes(0xA8,6);
     return({x:a[1], y:a[3], z:a[5]});
-  },
+  }, 
+   
 };
   
 //ACCEL.init(wOS.I2C, {"INTPIN": D8});
