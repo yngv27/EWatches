@@ -1,0 +1,13 @@
+// rename to ".boot0" to run at startup
+E.kickWatchdog();
+function KickWd(){
+  //if( (typeof(BTN1)=='undefined')) ||(!BTN1.read())  
+  E.kickWatchdog();
+}
+var wdint=setInterval(KickWd,8000);
+E.enableWatchdog(20, false);
+
+// turn off HRS LEDs
+D7.set(); 
+let _S = require("Storage");
+if(_S.read("QY03X.js")) eval(_S.read("QY03X.js"));
