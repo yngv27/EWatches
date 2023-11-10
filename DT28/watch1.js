@@ -207,7 +207,7 @@ XWID: g.getWidth(),
 XMID: g.getWidth()/2, 
 YMID: g.getHeight()/2,
 };
-wOS.BKL.set();
+wOS.wake();
 exports.drawBkgd();
 let dt = {hr:12, min:35, niceDate: "Sun Jul 12"};
 exports.drawClock(dt);
