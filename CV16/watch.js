@@ -28,13 +28,17 @@ exports.drawClock = (dt) => {
 }
 
 let drawDate = () => {
+  print("DrawDate called alright...");
   let mon = Date().getMonth()+1;
+  print(`mon = ${mon}`);
   LCD.setDigit(9, Math.floor(mon/10));
   LCD.setDigit(10, mon%10);
   let dt = Date().getDate();
+  print(`dt = ${dt}`);
   LCD.setDigit(11, Math.floor(dt/10), true);
   LCD.setDigit(12, dt%10);
 }
+
 exports.drawDate = drawDate;
 exports.drawData = (dt) => {
   // draw battery on the hour, else step count

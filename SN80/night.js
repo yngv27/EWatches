@@ -67,7 +67,7 @@ function init() {
         g.setRotation(1, false);
         g.setBgColor(0);
         // allow ANY motion to wake us up
-        ping = setWatch(wOS.wake, ACCEL.INTPIN, {repeat: true, edge: "rising"});
+        //ping = setWatch(wOS.wake, ACCEL.INTPIN, {repeat: true, edge: "rising"});
       }
     
       let drawClock = (d) => {

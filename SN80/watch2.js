@@ -33,10 +33,10 @@ function init() {
 
   let drawClock = (d) => {
     g.setColor(0,0.02,0).fillCircle(120,84,66);
-    if(Math.floor(d.hr/10)) g.drawImage(FONT.getDigit(f48, 1), 62, 50);  
+    if(Math.floor(d.hr/10)) g.drawImage(FONT.getDigit(f48, 1), 66, 50);  
     g.drawImage(FONT.getDigit(f48,d.hr%10), 86, 50);
     g.drawImage(FONT.getDigit(f48,Math.floor(d.min/10)), 120, 50);
-    g.drawImage(FONT.getDigit(f48,d.min%10), 136, 50);
+    g.drawImage(FONT.getDigit(f48,d.min%10), 148, 50);
   };
 
   let drawData = (d) => {

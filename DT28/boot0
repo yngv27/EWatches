@@ -5,15 +5,36 @@ function KickWd(){
 }
 var wdint=setInterval(KickWd,5000);
 E.enableWatchdog(20, false);
-// set GPIOs
-let n0 = new Uint32Array([
-    0x00000002, 0x00000002, 0x00000000, 0x00000002, 0x00000002, 0x0003000c, 0x00000003, 0x0000000c,
-    0x00000003, 0x00000003, 0x00000002, 0x00000003, 0x00000003, 0x00000003, 0x00000002, 0x00000003,
-    0x00000003, 0x00000003, 0x0000060c, 0x0000060c, 0x00000003, 0x00000002, 0x00000000, 0x00000000,
-    0x00000003, 0x00000003, 0x00000003, 0x00000003, 0x00000003, 0x0003000c, 0x0003000c, 0x00000003,
-    ]);
-for(let p=0; p<32; p++) { 
-    poke32(0x50000700+4*p, n0[p]);
+
+function setGPIOs() {
+  let n0 = new Uint32Array([
+      0x00000002, 0x00000002, 0x00000000, 0x00000002, 0x00000002, 0x0003000c, 0x00000003, 0x0000000c,
+      0x00000003, 0x00000003, 0x00000002, 0x00000003, 0x00000003, 0x00000003, 0x00000002, 0x00000003,
+      0x00000003, 0x00000003, 0x0000060c, 0x0000060c, 0x00000003, 0x00000002, 0x00000000, 0x00000000,
+      0x00000003, 0x00000003, 0x00000003, 0x00000003, 0x00000003, 0x0003000c, 0x0003000c, 0x00000003,
+      ]);
+  for(let p=0; p<32; p++) { 
+      poke32(0x50000700+4*p, n0[p]);
+  }
 }
+setGPIOs();
 let _S = require("Storage");
 if(_S.read("DT28.js")) eval(_S.read("DT28.js"));
+if(_S.read("DT28X.js")) eval(_S.read("DT28X.js"));
+
+function getTZOff() {
+  let dt=Date();
+  let m = dt.getMonth(), d=dt.getDate(), dow=dt.getDay();
+  if(m<2 || m>10) return(-5);
+  if(m>2 && m<10) return(-4);
+  if(m == 2) {
+    if(d-dow > 7) return(-4);
+    return(-5);
+  } else if (m == 10) {
+    if(d-dow > 0) return(-5);
+    return(-4);
+  }
+   return(-1);
+}
+E.setTimeZone(getTZOff());
+

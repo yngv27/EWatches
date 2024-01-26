@@ -7,7 +7,11 @@ function KickWd(){
 var wdint=setInterval(KickWd,8000);
 E.enableWatchdog(20, false);
 
+E.setTimeZone(-5); // PUT COOL CODE IN HERE
+
+pinMode(D4, "input_pullup");
 // turn off HRS LEDs
 D7.set(); 
 let _S = require("Storage");
 if(_S.read("QY03X.js")) eval(_S.read("QY03X.js"));
+if(_S.read("QY03.js")) eval(_S.read("QY03.js"));
