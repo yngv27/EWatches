@@ -71,36 +71,63 @@ function resetBusy() {
   }
 }
    
+
 // loops through each pin, toggling it high/low at for 1 sec; useful for testing
 // a single pin with a multimeter
-function r() {
-  delay(3000);
-  for(let p=0; p < pins.length; p++) {
-    let pin = pins[p].toString();
-    for(c=0; c<1; c++) {
-      pins[p].set();
-      print(`${pin} is SET`);
-      delay(999);
-      pins[p].reset();
-      print(`${pin} is RESET`);
-      delay(999);
+let r = {
+  pinIdx: 0,
+  intvl: 0,
+  isSet: false,
+  stop: ()=>{
+    if(r.intvl) clearInterval(r.intvl);
+    print("* * * * * * * * * * * * * * * * Stopped");
+  },
+  start: () => {
+    print("started");
+    r.pinIdx=0;
+    setTimeout(()=>{
+      r.intvl = setInterval(r.tick, 1000);
+    }, 3000);
+  },
+  tick: () => {
+    if(r.pinIdx >= pins.length) r.stop();
+    if(!r.isSet) {
+      pins[r.pinIdx].set();
+      print(pins[r.pinIdx] + " SET");
+    } else {
+      pins[r.pinIdx].reset();
+      print(pins[r.pinIdx++] + " RESET");
     }
+    r.isSet = !r.isSet;
   }
-}
+};
 
 // repeatedly toggles a single pin high/low for 1 sec pulses; useful for testing
 // multiple leads quickly (such as a ribbon connector)
-function t(p) {
-  for(let c=0; c < 100; c++) {
-    let pin = p.toString();
-    p.set();
-    print(`${pin} is SET`);
-    delay(999);
-    p.reset();
-    print(`${pin} is RESET`);
-    delay(999);
+let t = {
+  intvl: 0,
+  isSet: false,
+  pin: 0,
+  stop: ()=>{
+    if(t.intvl) clearInterval(t.intvl);
+    print("* * * * * * * * * * * * * * * * Stopped");
+  },
+  start: (p) => {
+    print("started");
+    t.pin=p;
+    t.intvl = setInterval(t.tick, 1000);
+  },
+  tick: () => {
+    if(!t.isSet) {
+      print(t.pin + " SET");
+      t.pin.set();
+    } else {
+      print(t.pin + " RESET");
+      t.pin.reset();
+    }
+    t.isSet = !t.isSet;
   }
-}
+};
 
 // analog pins (battery level test)
 let apins = [
