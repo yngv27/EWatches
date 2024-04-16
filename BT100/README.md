@@ -4,7 +4,8 @@ SCL = D20
 SDA + D19 (0x1f) / KS023
 HRS: SCL D9, SDA D10
 
-|Pin|Function|
+| Pin No.  | Description |
+| ------------- | ------------- |
 |D3|Charging |
 |D5|BTN 1 (high == pressed|
 |D7|Buzzer ( 0 == off)|
