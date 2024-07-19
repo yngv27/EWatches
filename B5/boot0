@@ -5,4 +5,17 @@ function KickWd(){
 var wdint=setInterval(KickWd,2000);
 E.enableWatchdog(15, false);
 const _S = require("Storage");
+()=> {
+  let dt=Date();
+  let m = dt.getMonth(), d=dt.getDate(), dow=dt.getDay();
+  if(m<2 || m>10) E.setTimeZone(-5);
+  if(m>2 && m<10) E.setTimeZone(-4);
+  if(m == 2) {
+    if(d-dow > 7) E.setTimeZone(-4);
+    else E.setTimeZone(-5);
+  } else if (m == 10) {
+    if(d-dow > 0) E.setTimeZone(-5);
+    else E.setTimeZone(-4);
+  }
+}();
 eval(_S.read("B5.drivers.js"));
