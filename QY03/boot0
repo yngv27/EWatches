@@ -11,6 +11,11 @@ E.enableWatchdog(15);
   if ((m == 10) && (d-dow <= 0)) dz=-4;
   E.setTimeZone(dz);
 }();
+E.at = (timeStr, func) => {
+  let delay = Math.floor((new Date(timeStr)).getTime() - (new Date()).getTime());
+  //print("thats in "+delay);
+  setTimeout(func, delay);
+};
 
 pinMode(D4, "input_pullup");
 // turn off HRS LEDs

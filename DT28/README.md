@@ -11,6 +11,7 @@ Here's the (Espruino) pinouts I know:
 |D7 | SPI Flash MISO |
 |D8 | Shared: LCD/Flash MOSI / I2C SDA (SC7A20) |
 |D9 | Shared: LCD/Flash CLK / I2C SCK (SC7A20) |
+|D11| Touch INT (CSTx16)|
 |D12| LCD CS |
 |D13| ACCEL Interrupt |
 |D16| backlight (1 == on, accepts analogWrite)|

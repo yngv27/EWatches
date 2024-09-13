@@ -19,7 +19,8 @@ Here's the (Espruino) pinouts I know:
 |D13 | SPI Flash CLK |
 |D14 | SPI Flash MOSI |
 |D15| I2C INT |
-|D16| I2C RST ?? |
+|D16 | I2C RST ?? original firmware sets this to float on startup |
+|D17 | I2C EN ?? original firmware sets this to float on startup |
 |D21| buzzer (0 == on, 1 == off, accepts analogWrite)|
 |D22| battery on charger (0 = on charger) |
 |D28| BTN1 (0 == pressed, needs pullup)|
