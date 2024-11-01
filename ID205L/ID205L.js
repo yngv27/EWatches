@@ -32,7 +32,7 @@ wOS={
     E.setTimeZone(wOS.timezone);
   },
   sleep:()=>{
-    TC.disable();
+    //TC.disable();
     wOS.emit("lcdPower",false);
     wOS.setLCDBrightness(0);
     g.lcd_sleep();
@@ -47,7 +47,7 @@ wOS={
     wOS.setLCDBrightness(b);
   },
   wake: ()=> {
-    if(TC) TC.enable();
+    //if(TC) TC.enable();
     D22.set();// special?
     ACCEL.disable();
     g.lcd_wake();
@@ -56,7 +56,8 @@ wOS={
     wOS.time_left=wOS.ON_TIME;
     //print(`TL: ${wOS.time_left}`);
     wOS.awake = true;
-    wOS.setLCDBrightness(wOS.BRIGHT); // make this smarter
+    //wOS.setLCDBrightness(wOS.BRIGHT); // make this smarter
+    wOS.bright();
     if(!wOS.tikint) wOS.tikint = setInterval(wOS.tick, 1000);
   },
 
@@ -133,7 +134,7 @@ wOS.showLauncher=function(){
 //eval(_S.read("prompt-sn80.js"));
 //eval(_S.read("widgets-sn80.js"));
 wOS.btnWatches=[
-  setWatch(function(){if(wOS.awake)wOS.showLauncher();else wOS.wake();},BTN1,{repeat:1,edge:"falling"}),
+  setWatch(function(){wOS.wake();},BTN1,{repeat:1,edge:"falling"}),
 ];
 
 

@@ -11,8 +11,10 @@ wOS = {
   CHG: D8,
   BLK: D16,
   BAT: D30,
-  buzz: (ms) => {  wOS.BUZ.reset(); setTimeout(()=>{wOS.BUZ.set();}, ms?ms:200);  },
-  isCharging: ()=>{return !(wOS.CHG.read());},
+  buzz: (ms) => {  
+    analogWrite(wOS.BUZ, 0.45); setTimeout(()=>{wOS.BUZ.set();}, 200);
+  },
+isCharging: ()=>{return !(wOS.CHG.read());},
   
   setLCDBrightness: ()=>{},
 };
@@ -41,6 +43,9 @@ NRF.setAdvertising({},{name:"MagicX "+NRF.getAddress().split(':').slice(-2).join
 
 // battery is D2, hi=0.677 lo=0.617
 E.getBattery = () => { return (analogRead(D2)-0.65)*2000; };
+// or perhaps D30, hi=0.6 lo=0.47?
+E.getBattery = () => { return(Math.floor((analogRead(D30)-0.47)*769));};
+
 setInterval(()=>{
   NRF.setAdvertising({
     0x180F : [E.getBattery()] // Service data 0x180F = 95

@@ -83,6 +83,8 @@ ACCEL.init();
 // D8 is our power pin for the display
 pinMode(D8, "output");
 D8.set();
+// and D28 is our new button
+pinMode(D28, "input_pullup");
 
 SPI1.setup({ sck:D7, mosi:D6, order: "lsb", baud: 4000000 });
 var g = require("~MEMLCD.js").connect(SPI1, D2/*SCS*/, 0/*EXTCOMIN*/, 144/*width*/, 168/*height*/);
@@ -110,6 +112,8 @@ wOS.showLauncher = function(){
   //load("launch.js");
 };
 wOS.UI = {};
+
+// make sure you override BTN1 in the UI stuff!
 
 global.Bangle = wOS;
 logD = print;

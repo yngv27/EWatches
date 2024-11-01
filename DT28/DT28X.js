@@ -14,14 +14,12 @@ wOS = {
   BAT: D2,
   buzz: (ms) => {  wOS.BUZ.set(); setTimeout(()=>{wOS.BUZ.reset();}, ms?ms:200);  },
   isCharging: ()=>{return !(wOS.CHG.read());},
-  
   setLCDBrightness: ()=>{},
 };
 
 wOS.BUZ.reset(); // in case we go nuts on start up
 
-var spi1 = new SPI();
-spi1.setup({sck: D18, mosi: D19, baud: 2000000});
+/* E-INK
 opts = {
   cs: D9, //dummy
   dc: D28,
@@ -34,9 +32,20 @@ var g=require("~SSD1681.js").connect(opts);
 g.setRotation(2,1);
 g.setBgColor(1).setColor(0);
 g.clear();
+*/
+// MEMLCD
+opts = {
+  cs: D28, 
+  //vcom: D11,
+  width: 240,
+  height: 240,
+};
+opts.spi = new SPI();
+opts.spi.setup({sck: D18, mosi: D19, order: "lsb", baud: 2000000});
 
+var g = require("~MEMLCD.js").connect(opts); 
 
-if (_S.read("~SC7A20.js")) eval(_S.read("~SC7A20.js"));
+//if (_S.read("~SC7A20.js")) eval(_S.read("~SC7A20.js"));
 //ACCEL.on("faceup", wOS.wake);
 
 setWatch(()=>{wOS.buzz();}, wOS.CHG, {"edge":"both", "repeat":true});
@@ -46,8 +55,8 @@ logD = ()=>{};
 // we're "special"
 NRF.setAdvertising({},{name:"DT28X "+NRF.getAddress().split(':').slice(-2).join('')});
 
-// battery is D2, hi=0.677 lo=0.617
-E.getBattery = () => { return (analogRead(D2)-0.65)*2000; };
+// battery is D2, hi=0.693 lo=0.576
+E.getBattery = () => { return (analogRead(D2)-0.576)*854; };
 setInterval(()=>{
   NRF.setAdvertising({
     0x180F : [E.getBattery()] // Service data 0x180F = 95

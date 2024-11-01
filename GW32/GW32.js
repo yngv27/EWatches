@@ -1,104 +1,129 @@
 
-/*
-D2   board HR_IN
-D3   HRS3300 CLK (I2C) (pairs with D47) / board SCL
-D4   SC7A20 CLK (I2C) (pairs with D27) / ??? SPI Flash CLK
-D5   SPI Flash CS
-D6   SPI Flash IO1 / SO
-D7   GC9A01 Display SPI DC
-D8   GC9A01 Display SPI CS
-
-D9
-D10
-D11  TP Interrupt
-D12  TP Power (set to power TP)
-D13
-D14  GC9A01 Display SPI CLK
-D15  GC9A01 Display SPI IO
-D16  Display ????
-
-D17
-D18
-D19  SC7A20 Interrupt
-D20  board HR_3V3
-D21
-D22  Charging (on == HIGH)
-D23  TP Reset / board TP_3V0
-D24  LCD Backlight (analog)
-
-D25  GC9A01 Display SPI ENable
-D26
-D27  SC7A20 DATA (I2C) (pairs with D4) / ??? SPI Flash IO0 / SI 
-D28
-D29
-D30
-D31  Battery level (analog  low = 0.542, high =  0.721)
-D32  Buzzer (analog)
-
-D33
-D34
-D35
-D36  Display ????
-D37  Display ????
-D38  GC9A01 Display SPI Reset
-D39
-D40  IT7529 TP DATA (I2C) / board SDA1
-
-D41  IT7529 TP CLK (I2C) / board SCL1
-D42
-D43
-D44  BTN1 (normal == LOW)
-D45
-D46
-D47  HRS3300 DATA (I2C) (pairs with D3) / board SDA
-*/
-
-let battLevel = () => { 
-  return analogRead(D31).toFixed(6);
-};
-
-delayms = (ms) => {
-  digitalPulse(D2,0,[ms,0]); // D2 is unused?
-};
-
 wOS = {
-  time_left: 0,
-  brightLevel: 0.75,
-  buzz: (ms) => {  ms=ms?ms:200; digitalPulse(D32, 1, ms); },
-  setLCDBrightness: (v) => { analogWrite(D24,v); },
-  isCharging: ()=>{return D22.read();},
-};
-
-if (_S.read("lcd.js")) eval(_S.read("lcd.js"));
-// g should be set
-// setup accel i2c
-//var wOSI2C = new I2C();
-//wOSI2C.setup({scl:D7,sda:D6,bitrate:200000});
-
-if (_S.read("accel.js")) eval(_S.read("accel.js"));
-// accel should be init'd
-if (_S.read("touch.js")) eval(_S.read("touch.js"));
-
-
-ACCEL.on("faceup", ()=>{
-  g.lcd_wake();
-  wOS.setLCDBrightness(wOS.brightLevel);
-  TC.start();
-  setTimeout(()=> {
-    g.lcd_sleep();
-    wOS.setLCDBrightness(0);
-    TC.stop();
-  }, 10000);
-});
-
-setWatch(()=>{wOS.buzz();}, D22, {repeat: true, edge: "both"});
-E.showMessage = function(msg,title) {};
-E.setTimeZone(-4);
-let batLo = 0.542, batHi = 0.721;
-E.getBattery = () => {
-  let pct = Math.floor((analogRead(D31) - batLo) * 100 / (batHi-batLo));
-  return (pct > 100) ? 100 : pct;
-};
-
-// Bangle up
-Bangle = wOS;
+    BUZ: D32,
+    CHG: D22,
+    BKL: D24,
+    BAT: D31,
+    time_left: 0,
+    buzz: (ms) => {  wOS.BUZ.set(); setTimeout(()=>{wOS.BUZ.reset();}, ms?ms:200);  },
+    isCharging: ()=>{return !(wOS.CHG.read());},
+    ticker: 0,
+    tikint: 0,
+    isAwake: false,
+    sleep: ()=> {
+      g.lcd_sleep();
+      wOS.setLCDBrightness(0);
+      wOS.emit("sleep");
+      wOS.isAwake = false;
+    },
+    wake: ()=>{
+      wOS.ticker = 7;
+      if(wOS.isAwake) return;
+      g.lcd_wake();
+      wOS.setLCDBrightness(wOS.brightLevel());
+      if(!wOS.tikint) wOS.tikint = setInterval(wOS.tick, 1000);
+      wOS.emit("wake");
+      wOS.isAwake = true;
+    },
+    tick: ()=>{
+      wOS.ticker--;
+      wOS.emit("tick");
+      if(wOS.ticker <= 0){
+        clearInterval(wOS.tikint);
+        wOS.tikint = 0;
+        wOS.sleep();
+      }
+    },
+    brightLevel: ()=> { 
+      let c=Math.floor(Date().getHours()/3);
+      return [0.55,0.75,0.8,0.99][c > 3 ? 7-c : c]; 
+    },
+    setLCDBrightness: (lvl)=>{analogWrite(wOS.BKL, lvl);},
+  };
+  
+  wOS.BUZ.reset(); // in case we go nuts on start up
+  
+  if (_S.list().includes("lcd.js")) eval(_S.read("lcd.js"));
+  if (_S.list().includes("~SC7A20.js")) eval(_S.read("~SC7A20.js"));
+  //ACCEL={};
+  ACCEL.on("faceup", wOS.wake);
+  
+  setWatch(()=>{wOS.buzz();}, wOS.CHG, {"edge":"both", "repeat":true});
+  Bangle = wOS;
+  wOS.UI = {};
+  logD = ()=>{};
+  
+  
+  // battery is D31, lo = 0.542, high = 0.721
+  //E.getBattery = () => { return (analogRead(wOS.BAT)-0.54)*555; };
+  let batLo = 0.542, batHi = 0.721;
+  E.getBattery = () => {
+    let pct = Math.floor((analogRead(wOS.BAT) - batLo) * 100 / (batHi-batLo));
+    return (pct > 100) ? 100 : pct;
+  };
+  
+  
+  wOS.setStepCount = (n) => {};
+  wOS.getStepCount = () => { return 0; };
+  
+  setInterval(()=>{  // advertise battery level every 5 min
+    NRF.setAdvertising({0x180F : [E.getBattery()] });
+  }, 300000);
+  
+  // MANAGE EVENTS
+  let BUTTON = {
+    lastUp: 0,
+    longpressTO: 0,
+    tapTO: 0,
+    longTime: 1000,
+    tapTime: 250,
+    dbltap: false,
+    watchUp: false,
+    upOpts: { repeat:false, edge:'falling', debounce:25},
+    dnOpts: { repeat:false, edge:'rising', debounce:25},
+  };
+    
+  const btnDown = (b) => {
+    //longpress = b.time;
+    if(BUTTON.tapTO) {
+      clearTimeout(BUTTON.tapTO);
+      BUTTON.tapTO = 0;
+      BUTTON.dbltap = true;
+    }
+    BUTTON.longpressTO = setTimeout(function(){
+      // long press behaviour
+      //BUTTON.emit('longpress');
+      wOS.UI.emit('longpress');
+      BUTTON.longpressTO = 0;
+      // ignore button up
+      BUTTON.watchUp = false;
+    }, BUTTON.longTime);
+    logD(`lpto=${BUTTON.longpressTO}`);
+    BUTTON.watchUp = true;
+    setWatch(btnUp, BTN1, BUTTON.upOpts);
+  };
+  
+  const btnUp = (b) => {
+    if(BUTTON.longpressTO) {
+      clearTimeout(BUTTON.longpressTO);
+      BUTTON.longpressTO = 0;
+    } 
+    if(BUTTON.dbltap) {
+      //BUTTON.emit('dbltap');
+      wOS.UI.emit('dbltap');
+      BUTTON.dbltap = false;
+    } else if (BUTTON.watchUp) {
+      BUTTON.tapTO = setTimeout(function(){
+        // long press behaviour
+        //BUTTON.emit('tap');
+        wOS.UI.emit('tap');
+        BUTTON.tapTO = 0;
+        BUTTON.dbltap = false;
+      }, BUTTON.tapTime);
+      logD(`lpto=${BUTTON.tapTO}`);
+    }
+    BUTTON.lastUp = b.time;
+    setWatch(btnDown, BTN1, BUTTON.downOpts);
+  };
+  
+  setWatch(btnDown, BTN1, BUTTON.downOpts);
