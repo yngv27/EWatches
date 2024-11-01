@@ -1,4 +1,6 @@
-
+pinMode(D4, "input_pulldown");
+// turn off HRS LEDs
+//D7.set(); 
 E.showMessage = function(msg,title) {};
 delayms = (ms) => {
   digitalPulse(D4,0,ms); // just to wait ms - D4 is a "dummy" (broken button)
@@ -62,7 +64,7 @@ wOS.UI = {};
 logD = ()=>{};
 
 //E.setTimeZone(-4);
-// battery is D2, hi=0.347 lo=0.275
+// battery is D2, hi=0.95 lo=0.275
 E.getBattery = () => { 
   var l=3.5,h=4.19;
   v=4.20/0.59*analogRead(wOS.BAT);
@@ -80,8 +82,7 @@ setInterval(()=>{  // advertise battery level every 5 min
   NRF.setAdvertising({0x180F : [E.getBattery()] });
 }, 300000);
 
-// temporarily load fanoush's code
-eval(_S.read("lcd.js"));
+eval(_S.read("~ST7789.js"));
 eval(_S.read("~SC7A20.js"));
 ACCEL.on('faceup',() => {
   wOS.wake();
