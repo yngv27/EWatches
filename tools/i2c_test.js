@@ -1,10 +1,14 @@
-// requires pinutils for pinBusy, resetBusy, delay
+pins = [D3, D4, D9, D10, D12, D13, D14, D15, D16, D27];
+//pins = [D2, D3, D6, D7];
 
-// loop through pin list, trying each for ENable, I2C SDA and SCL to see if any 
-// component answers
+// used to track if in a series of nested loops a pin is being used
+let pinBusy = [];
 
-// recommend you use a watchdog here, it's easy to hang the MCU by poking too much
-
+function resetBusy() {
+  for(let i = 0; i< pins.length; i++) {
+    pinBusy[i] = false;
+  }
+}
 function isDeviceOnBus(i2c,id) {
  try {
    return i2c.readFrom(id,1);
@@ -18,7 +22,8 @@ function detect(i2c,first, last) {
  last = last | 0x77;
  var idsOnBus = Array();
  for (var id = first; id <= last; id++) {
-   if ( isDeviceOnBus(i2c,id) != -1) {
+   let r = isDeviceOnBus(i2c,id);
+   if ( r != -1 && r != 255 && r != 0) {
      idsOnBus.push(id);
    }
  }
@@ -55,7 +60,7 @@ function test() {
     }
     
   }
-  
+  tik=0;
   EN=getNextPin(++EN);
   if(EN == -1) {
     pinBusy[SCL++]=false;
@@ -65,6 +70,7 @@ function test() {
       SDA=getNextPin(SDA);
       if(SDA == -1) {
         print("DONE");
+        if(tik) clearInterval(tik);
         return;
         SDA=0;
       }
@@ -76,32 +82,3 @@ function test() {
 
 t=test;
 s=setInterval;
-
-/* older version with delay() which seems to gum things up
-for(let EN=0; EN < pins.length; EN++) {
-  resetBusy();
-  pinBusy[EN] = true;
-  pins[EN].set();
-  // comment out above 4 lines is you don't need to ENable a pin to use I2C (and the last two lines)
-  for(let SDA=0; SDA < pins.length; SDA++) {
-    if(pinBusy[SDA]) continue;
-    pinBusy[SDA] = true;
-    print(`Scanning EN=${pins[EN]} SDA=${pins[SDA]}`);
-    for(let SCL=0; SCL < pins.length; SCL++) {
-      if(pinBusy[SCL]) continue;
-      pinBusy[SCL] = true;
-      myI2C.setup( {scl: pins[SCL], sda: pins[SDA], bitrate: 100000} );
-      let res = detect( myI2C );
-      if(res.length > 0) {
-        print(`Scanning SCL=${pins[SCL]} SDA=${pins[SDA]}`);
-        print(`--------------- RES= ${res}--------------`);
-      }
-      delay(500);
-      pinBusy[SCL] = false;
-    }
-    pinBusy[SDA] = false;
-  }
-   // comment out below 2 lines is you don't need to ENable a pin to use I2C 
-  pinBusy[EN] = false;
-}
-*/
