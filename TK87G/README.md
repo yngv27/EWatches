@@ -6,6 +6,9 @@ Here's the (Espruino) pinouts I know:
 | Pin No.  | Description |
 | ------------- | ------------- |
 |D3| analog battery (hi = 0.23, lo = 0.18)|
+|D4| LCD CLK|
+|D5| LCD CS|
+|D6| LCD RST|
 |D8|  backlight (0 == on, 1 == off, accepts analogWrite)|
 |D19| SPI Flash CLK |
 |D20| buzzer (1 == on, 0 == off, accepts analogWrite)|
@@ -13,6 +16,8 @@ Here's the (Espruino) pinouts I know:
 |D22| SPI Flash WP |
 |D23| SPI Flash MOSI |
 |D24| BTN2 (0 == pressed)|
+|D26| LCD MOSI|
+|D27| LCD DC|
 |D32| SPI Flash HOLD |
 |D33| CST816S SDA |
 |D34| CST816S SCL |
@@ -24,7 +29,7 @@ Here's the (Espruino) pinouts I know:
 NOTES
 =====
 Pins discovered on LCD connector:
-Inside row:  D4, D5, D6, D9, D27, D26
+Inside row:  D4, D5, D6, D9, D27, D26 (ST7789)
 Outside row: D33-D36 (CST816S I2C touch panel)
 D11 - sometimes
 
@@ -33,5 +38,5 @@ Inner: D7, D12
 Outer: 
 
 Test points on the back (in groups)
-D29, D31 (D29 floats at 0.6v)
+D29, D31 (D29 floats at 0.6v) - this is likely GPS serial, haven't found the power pin for this
 D42, D43
