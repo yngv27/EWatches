@@ -10,6 +10,7 @@ Here's the (Espruino) pinouts I know:
 |D5| LCD CS|
 |D6| LCD RST|
 |D8|  backlight (0 == on, 1 == off, accepts analogWrite)|
+|D11| I2C SCL (addr = 0x33  ? thermometer)|
 |D19| SPI Flash CLK |
 |D20| buzzer (1 == on, 0 == off, accepts analogWrite)|
 |D21| SPI Flash MISO |
@@ -18,12 +19,17 @@ Here's the (Espruino) pinouts I know:
 |D24| BTN2 (0 == pressed)|
 |D26| LCD MOSI|
 |D27| LCD DC|
+|D29 | possibly GPS RX? |
+|D31 | possibly GPS TX? |
 |D32| SPI Flash HOLD |
 |D33| CST816S SDA |
 |D34| CST816S SCL |
 |D35| CST816S RST |
 |D36| CST816S INT |
+|D37| I2C SCL - accelerometer addr=0xf (Kionix?)|
+|D38| I2C SDA - accel|
 |D40| Charging (0 == charging, 1 == not)|
+|D41| I2C SDA (addr = 0x33  ? thermometer)|
 |D46| BTN1 (0 == pressed)|
 
 NOTES
@@ -39,4 +45,4 @@ Outer:
 
 Test points on the back (in groups)
 D29, D31 (D29 floats at 0.6v) - this is likely GPS serial, haven't found the power pin for this
-D42, D43
+D42, D43 (maybe TX,RX?)
