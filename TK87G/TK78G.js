@@ -1,8 +1,8 @@
 
 E.showMessage = function(msg,title) {};
 delayms = (ms) => {
-  digitalPulse(D6,0,ms); // just to wait 10ms
-  digitalPulse(D6,0,0);
+  digitalPulse(D47,0,ms); // just to wait 10ms
+  digitalPulse(D47,0,0);
 };
 
 wOS = {
@@ -19,7 +19,7 @@ wOS = {
 };
 
 wOS.BUZ.reset(); // in case we go nuts on start up
-
+/*
 let spi1 = new SPI();
 spi1.setup({sck: D36, mosi: D34, baud: 2000000});
 g = require("~IL3829.js").connect(spi1, {cs: D4, dc: D33, rst: D35, width: 200, height: 200});
@@ -27,6 +27,7 @@ setTimeout( ()=>{
   g.setBgColor(1).setColor(0);
   g.clear(); 
 }, 500);
+*/
 
 
 //if (_S.read("~SC7A20.js")) eval(_S.read("~SC7A20.js"));

@@ -1,5 +1,5 @@
 // rename to ".boot0" to run at startup
-E.enableWatchdog(15);
+E.enableWatchdog(10);
 let _S = require("Storage");
 
 setTimeout(()=>{
@@ -20,9 +20,9 @@ E.at = (timeStr, func) => {
   if(timeStr.indexOf("T") < 0) { timeStr = Date().toISOString().substring(0,11)+timeStr;}
   let delay = Math.floor((new Date(timeStr)).getTime() - (new Date()).getTime());
   if (delay < 0) delay += 24*60*60*1000;
-  //print("thats in "+delay/1000);
+  print("thats in "+delay/1000);
   setTimeout(func, delay);
 };
 
-if(_S.read("QY03X.js")) eval(_S.read("QY03X.js"));
-if(_S.read("QY03.js")) eval(_S.read("QY03.js"));
+eval(_S.read("QY03X.js"));
+eval(_S.read("QY03.js"));

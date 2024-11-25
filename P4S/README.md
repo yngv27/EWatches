@@ -3,7 +3,7 @@ As of 2024/11/01, still available [https://www.aliexpress.com/item/1005007150275
 - Touch: CST716 (I2C addr 0x15)
 - Accel: SC7A20 (I2C addr 0x18)
 
-Here's the (Espruino) pinouts I know:
+Here are the known pins:
 
 | Pin No.  | Description |
 | ------------- | ------------- |

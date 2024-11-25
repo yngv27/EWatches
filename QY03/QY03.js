@@ -3,13 +3,13 @@ pinMode(D4, "input_pulldown");
 //D7.set(); 
 E.showMessage = function(msg,title) {};
 delayms = (ms) => {
-  digitalPulse(D4,0,ms); // just to wait ms - D4 is a "dummy" (broken button)
-  digitalPulse(D4,0,0);
+  digitalPulse(D43,0,ms); // just to wait ms - D43 is a "dummy" (for QY03)
+  digitalPulse(D43,0,0);
 };
 wOS = {
   BUZ: D6,
   CHG: D8,
-  BLK: D12,
+  BKL: D12,
   BAT: D30,
   time_left: 0,
   buzz: (ms) => {  wOS.BUZ.reset(); setTimeout(()=>{wOS.BUZ.set();}, ms?ms:200);  },
@@ -18,6 +18,7 @@ wOS = {
   tikint: 0,
   sleep: ()=> {
     g.lcd_sleep();
+    TC.stop();
     wOS.setLCDBrightness(0);
     wOS.emit("sleep");
     wOS.isAwake = false;
@@ -25,6 +26,7 @@ wOS = {
   wake: ()=>{
     wOS.ticker = 7;
     if(wOS.isAwake) return;
+    TC.start();
     g.lcd_wake();
     wOS.setLCDBrightness(wOS.brightLevel());
     if(!wOS.tikint) wOS.tikint = setInterval(wOS.tick, 1000);
@@ -44,7 +46,7 @@ wOS = {
     let c=Math.floor(Date().getHours()/3);
     return [0.1,0.5,0.7,0.99][c > 3 ? 7-c : c]; 
   },
-  setLCDBrightness: (lvl)=>{analogWrite(wOS.BLK, lvl);},
+  setLCDBrightness: (lvl)=>{analogWrite(wOS.BKL, lvl);},
   setLCDPower:(b)=>{
     if(b){
       if(wOS.isAwake) wOS.time_left=wOS.ON_TIME;
@@ -63,31 +65,35 @@ Bangle = wOS;
 wOS.UI = {};
 logD = ()=>{};
 
-//E.setTimeZone(-4);
-// battery is D2, hi=0.95 lo=0.275
-E.getBattery = () => { 
-  var l=3.5,h=4.19;
-  v=4.20/0.59*analogRead(wOS.BAT);
-  if(v>=h)return 100;
-  if(v<=l)return 0;
-  return 100*(v-l)/(h-l);
-}
+// battery is D30, hi=0.60 lo=0.49
+E.getBattery = () => {
+  let batLo = 0.485, batHi = 0.611;
+  let pct = Math.floor((analogRead(wOS.BAT) - batLo) * 100 / (batHi-batLo));
+  return (pct > 100) ? 100 : pct;
+};
 wOS.setStepCount = (n) => {};
 wOS.getStepCount = () => { return 0; };
 
 // we're "special"
-NRF.setAdvertising({},{name:"QY03 "+NRF.getAddress().split(':').slice(-2).join('')});
+//NRF.setAdvertising({},{name:"QY03 "+NRF.getAddress().split(':').slice(-2).join('')});
 
 setInterval(()=>{  // advertise battery level every 5 min
   NRF.setAdvertising({0x180F : [E.getBattery()] });
 }, 300000);
 
-eval(_S.read("~ST7789.js"));
-eval(_S.read("~SC7A20.js"));
+SPI1.setup({sck:D45, mosi:D44, baud: 8000000});
+g=require("~ST7789.js").connect({spi:SPI1, dc:D47, cs:D3, rst:D2, height:280, yoff:20});
+
+I2C1.setup({sda: D15, scl:D14, bitrate:200000})
+let ACCEL=require("~SC7A20.js").connect({i2c: I2C1, intr:D16})
+let TC = require("~CSTx16.js").connect({i2c: I2C1, rst: D39, intr: D32});
+ 
+/*
 ACCEL.on('faceup',() => {
   wOS.wake();
 });
-
+*/
+//*
 const BTTN=D4;
 // MANAGE EVENTS
 let BUTTON = {
@@ -99,7 +105,7 @@ let BUTTON = {
   dbltap: false,
   watchUp: false,
   upOpts: { repeat:false, edge:'rising', debounce:25},
-  dnOpts: { repeat:false, edge:'falling', debounce:25},
+  downOpts: { repeat:false, edge:'falling', debounce:25},
 };
   
 const btnDown = (b) => {
@@ -146,3 +152,4 @@ const btnUp = (b) => {
 };
 
 setWatch(btnDown, BTTN, BUTTON.downOpts);
+//*/

@@ -1,27 +1,35 @@
 E.kickWatchdog();
 function KickWd(){
-  //if( (typeof(BTN1)=='undefined')||(!BTN1.read()) ) 
+  if( !BTN1.read() ) 
   E.kickWatchdog();
 }
 var wdint=setInterval(KickWd,2000);
-E.enableWatchdog(15, false);
+E.enableWatchdog(12, false);
+
 const _S = require("Storage");
-if(_S.list().includes("TK78G.js")) eval(_S.read("TK78G.js"));
 
-function getTZOff() {
-  let dt=Date();
-  let m = dt.getMonth(), d=dt.getDate(), dow=dt.getDay();
-  if(m<2 || m>10) return(-5);
-  if(m>2 && m<10) return(-4);
-  if(m == 2) {
-    if(d-dow > 7) return(-4);
-    return(-5);
-  } else if (m == 10) {
-    if(d-dow > 0) return(-5);
-    return(-4);
-  }
-   return(-1);
-}
-E.setTimeZone(getTZOff());
+if((new Date()).getFullYear() < 2020) {
+  setTimeout(()=>{
+    require("~setTime.js").setDtTz();
+  }, 5*1000);
+} else {
+let dz=Date();
+let m = dz.getMonth(), d=dz.getDate(), dow=dz.getDay();
+//if(m<2 || m>10) dz=-5;
+dz=-5;
+if(m>2 && m<10) dz=-4;
+if((m == 2) && (d-dow > 7)) dz=-4;
+if ((m == 10) && (d-dow <= 0)) dz=-4;
+E.setTimeZone(dz);
+};
+
+E.at = (timeStr, func) => {
+if(timeStr.indexOf("T") < 0) { timeStr = Date().toISOString().substring(0,11)+timeStr;}
+let delay = Math.floor((new Date(timeStr)).getTime() - (new Date()).getTime());
+if (delay < 0) delay += 24*60*60*1000;
+//print("thats in "+delay/1000);
+setTimeout(func, delay);
+};
 
 
+eval(_S.read(process.env.BOARD+".js"));

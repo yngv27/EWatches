@@ -41,23 +41,41 @@ wOS = {
       if(c<0)c++;
       return [0.01,0.2,0.75,0.99][c > 3 ? 7-c : c]; 
     },
-    setLCDBrightness: (lvl)=>{if(lvl ==0) wOS.BKL.set(); else analogWrite(wOS.BKL, 1-lvl);},
+    //setLCDbrightness: (lvl)=>{if(lvl ==0) wOS.BKL.set(); else analogWrite(wOS.BKL, 1-lvl);},
+    setLCDBrightness: (lvl) => {
+      v = Math.round(lvl*8);
+      v = v>7?7:v<0?0:v;
+      digitalWrite([D23,D22,D14],7-v);
+    },
+    
     isLCDOn: ()=>{return (wOS.isAwake);}
   };
 
   
 //wOS.buzz(); // in case we go nuts on start up
-//shared I2C for accel/touch
-wOS.I2C=new I2C();
-wOS.I2C.setup({scl:D7,sda:D6,bitrate:200000});
+SPI1.setup({sck:D2, mosi:D3, baud: 8000000});
+if (_S.list().includes("~ST7789.js")) g=require("~ST7789.js").connect({spi:SPI1, dc:D18, cs:D25, rst:D26, inverse:1, MADCTL:0});
+// because square screens suck..
+g.clears=g.clear;
+/*g.cbuf = Graphics.createArrayBuffer(7,7,1,{msg:true});g.cbuf.setBgColor(0).clear().setColor(1).fillCircle(7,7,7);g.cbuf = g.cbuf.asImage("string");*/
+g.cbuf = atob("BwcBDn37////gA==");
+g.clear = function(rst) {
+  let bg=g.getBgColor();  let fg=g.getColor();
+  g.clears(rst).setColor(bg).setBgColor(0);
+  for(let x=3; x>=0; x--) {
+    g.setRotation(x);
+    g.drawImage(g.cbuf,0,0);
+  }
+  g.setColor(fg).setBgColor(bg);
+};
 
-if (_S.list().includes("~GC9A01.js")) eval(_S.read("~GC9A01.js"));
-if (_S.list().includes("~BMA421.js")) ACCEL=require("~BMA421.js").connect(wOS.I2C);
-if (_S.list().includes("~CST716.js")) eval(_S.read("~CST716.js"));
-TC.init(wOS.I2C, { "RESET": D13, "INTPIN": D28});
-TC.start();
+//shared I2C for accel/touch
+I2C1.setup({scl:D7,sda:D6,bitrate:200000});
+if (_S.list().includes("~SC7A20.js")) ACCEL=require("~SC7A20.js").connect({i2c: I2C1, intr: D8});
+if (_S.list().includes("~CSTx16.js")) TC = require("~CSTx16.js").connect({i2c: I2C1, rst: D10, intr: D28}); //P4S
+ACCEL.init();
 ACCEL.isFaceUp = false;
-setInterval(()=>{
+/*setInterval(()=>{
     let a = ACCEL.getAccel();
     if(a.x > 230 && a.y < 15 && a.z > 225) {
         if(!ACCEL.isFaceUp) ACCEL.emit("faceup");
@@ -67,6 +85,7 @@ setInterval(()=>{
     }
 }, 400)
 //ACCEL={};
+*/
 ACCEL.on("faceup", wOS.wake);
 
 //setWatch(()=>{wOS.buzz();}, wOS.CHG, {"edge":"both", "repeat":true});
@@ -75,18 +94,25 @@ wOS.UI = {};
 logD = ()=>{};
 
 
-// battery is D31, lo = 0.485, high = 0.721
+// battery is D31, lo = 0.37, high = 0.47
 //E.getBattery = () => { return (analogRead(wOS.BAT)-0.54)*555; };
 E.getBattery = () => {
-    let batLo = 0.485, batHi = 0.611;
+    let batLo = 0.37 , batHi = 0.47;
     let pct = Math.floor((analogRead(wOS.BAT) - batLo) * 100 / (batHi-batLo));
     return (pct > 100) ? 100 : pct;
 };
 
 wOS.steps = 0;
+/* not yet
 wOS.getStepCount = () => {return ACCEL.getSteps();};
 wOS.setStepCount= (s) => {if(s==0) ACCEL.resetSteps(); else wOS.steps = s;};
 wOS.resetStepCounter = () => { ACCEL.resetSteps(); };
+*/
+wOS.getStepCount = () => {return 0;};
+wOS.setStepCount= (s) => {};
+wOS.resetStepCounter = () => {  };
+
+NRF.setAdvertising({},{name:"P4S "+NRF.getAddress().split(':').slice(-2).join('')});
 
 setInterval(()=>{  // advertise battery level every 5 min
     NRF.setAdvertising({0x180F : [E.getBattery()] });
@@ -94,6 +120,7 @@ setInterval(()=>{  // advertise battery level every 5 min
 
 //*
 // MANAGE EVENTS
+BTTN=D13;
 let BUTTON = {
 lastUp: 0,
 longpressTO: 0,
@@ -123,7 +150,7 @@ BUTTON.longpressTO = setTimeout(function(){
 }, BUTTON.longTime);
 logD(`lpto=${BUTTON.longpressTO}`);
 BUTTON.watchUp = true;
-setWatch(btnUp, BTN1, BUTTON.upOpts);
+setWatch(btnUp, BTTN, BUTTON.upOpts);
 };
 
 const btnUp = (b) => {
@@ -146,9 +173,9 @@ if(BUTTON.dbltap) {
     logD(`lpto=${BUTTON.tapTO}`);
 }
 BUTTON.lastUp = b.time;
-setWatch(btnDown, BTN1, BUTTON.downOpts);
+setWatch(btnDown, BTTN, BUTTON.downOpts);
 };
 
-setWatch(btnDown, BTN1, BUTTON.downOpts);
+setWatch(btnDown, BTTN, BUTTON.downOpts);
 //*/
   
