@@ -71,10 +71,20 @@ g.clear = function(rst) {
 
 //shared I2C for accel/touch
 I2C1.setup({scl:D7,sda:D6,bitrate:200000});
-if (_S.list().includes("~SC7A20.js")) ACCEL=require("~SC7A20.js").connect({i2c: I2C1, intr: D8});
+if (_S.list().includes("~SC7A20.js")) ACCEL=require("~SC7A20.js").connect({i2c: I2C1}); //, intr: D8});
 if (_S.list().includes("~CSTx16.js")) TC = require("~CSTx16.js").connect({i2c: I2C1, rst: D10, intr: D28}); //P4S
 ACCEL.init();
 ACCEL.isFaceUp = false;
+// poll
+setInterval(()=> {
+  var xyz = ACCEL.read();
+  //print(`v=${ACCEL.readBytes(0,1)[0]} xyz=${JSON.stringify(xyz)}`);
+  if(xyz.ax > 200 && xyz.ax < 240 && xyz.ay > 220 && xyz.ay < 240 && xyz.az > 200) {
+    //this.emit("faceup");
+    wOS.wake();
+  }
+}, 500);  
+
 /*setInterval(()=>{
     let a = ACCEL.getAccel();
     if(a.x > 230 && a.y < 15 && a.z > 225) {
