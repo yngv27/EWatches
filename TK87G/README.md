@@ -34,7 +34,7 @@ Here's the (Espruino) pinouts I know:
 
 NOTES
 =====
-Touch panel is a CST816S. Does not support gestures automatically, but does interrupt while finger is down, so you can really control the usage.  See myBangle/drivers/CSTx16.js
+Touch panel is a CST816S. Does not support gestures automatically, but does interrupt while finger is down, so you can really control the usage.  See !(myBangle/drivers/CSTx16.js)[https://github.com/yngv27/myBangle/blob/main/drivers/~CSTx16.js]
 
 Pins discovered on LCD connector:
 Inside row:  D4, D5, D6, D9, D27, D26 (ST7789)
