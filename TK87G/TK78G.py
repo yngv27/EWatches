@@ -40,15 +40,14 @@ info = {
      'DEFINES += -DBLUETOOTH_NAME_PREFIX=\'"TK78G"\'',
      #'DEFINES += -DCONFIG_GPIO_AS_PINRESET', # Allow the reset pin to work
      'DEFINES += -DCONFIG_NFCT_PINS_AS_GPIOS', 
-     'DEFINES+= -DSPISENDMANY_BUFFER_SIZE=60',
+     'DEFINES+= -DSPISENDMANY_BUFFER_SIZE=120',
      'USE_LCD_SPI_UNBUF=1',
      #'DEFINES += -DNRF_USB=1 -DUSB',
      'DFU_SETTINGS=--application-version 0xff --hw-version 52 --sd-req 0xa9,0xae,0xb6',
      'DFU_PRIVATE_KEY=targets/nrf5x_dfu/dfu_private_key.pem',
      'BOOTLOADER_SETTINGS_FAMILY=NRF52840',
      'DEFINES += -DNO_DUMP_HARDWARE_INITIALISATION',
-     'DEFINES += -DNRF_BL_DFU_INSECURE=1 -DNRF_BOOTLOADER_NO_WRITE_PROTECT=1  -DESPR_DCDC_ENABLE=1',
-     'DEFINES += -DNO_DUMP_HARDWARE_INITIALISATION',
+     'DEFINES += -DNRF_BL_DFU_INSECURE=1 -DNRF_BOOTLOADER_NO_WRITE_PROTECT=1',  #  -DESPR_DCDC_ENABLE=1',
      'DEFINES += -DUSE_FONT_6X8 -DGRAPHICS_PALETTED_IMAGES -DGRAPHICS_ANTIALIAS',
      'DEFINES += -DFDS_VIRTUAL_PAGES=2', #should match fstorage_pages below
      'NRF_SDK15=1'
@@ -57,7 +56,7 @@ info = {
 };
 
 
-save_code_pages = 96;
+save_code_pages = 145;
 fstorage_pages = 2; # typically 2, 10 reduces risk of brick on first flash from stock FW
 chip = {
   'part' : "NRF52840",
@@ -107,9 +106,6 @@ def get_pins():
   pinutils.findpin(pins, "PD30", True)["functions"]["ADC1_IN6"]=0;
   pinutils.findpin(pins, "PD31", True)["functions"]["ADC1_IN7"]=0;
   # Make buttons and LEDs negated
-  pinutils.findpin(pins, "PD6", True)["functions"]["NEGATED"]=0;
-  pinutils.findpin(pins, "PD8", True)["functions"]["NEGATED"]=0;
-  pinutils.findpin(pins, "PD12", True)["functions"]["NEGATED"]=0;
   pinutils.findpin(pins, "PD24", True)["functions"]["NEGATED"]=0;
   pinutils.findpin(pins, "PD46", True)["functions"]["NEGATED"]=0;
 
