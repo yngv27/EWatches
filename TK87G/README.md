@@ -11,6 +11,7 @@ Here's the (Espruino) pinouts I know:
 |D6| LCD RST|
 |D8|  backlight (0 == on, 1 == off, accepts analogWrite)|
 |D11| I2C SCL (addr = 0x33  ? thermometer)|
+|D18| SPI Flash CS |
 |D19| SPI Flash CLK |
 |D20| buzzer (1 == on, 0 == off, accepts analogWrite)|
 |D21| SPI Flash MISO |
