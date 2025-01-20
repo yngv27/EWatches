@@ -8,16 +8,15 @@ delayms = (ms) => {
 wOS = {
   BUZ: D7,
   CHG: D3,
-  BKL: D11,
   BAT: D2,
   time_left: 0,
-  buzz: (ms) => {  wOS.BUZ.set(); setTimeout(()=>{wOS.BUZ.reset();}, ms?ms:200);  },
+  buzz: (ms) => {  digitalPulse(wOS.BUZ, 1, 30);  },
+  //buzz: (ms) => { analogWrite(wOS.BUZ, 0.5); setTimeout(()=>{wOS.BUZ.reset();}, ms?ms:100); },
   isCharging: ()=>{return (wOS.CHG.read());},
   ticker: 0,
   tikint: 0,
   sleep: ()=> {
     g.lcd_sleep();
-    wOS.setLCDBrightness(0);
     wOS.emit("sleep");
     wOS.isAwake = false;
   },
@@ -25,7 +24,6 @@ wOS = {
     wOS.ticker = 7;
     if(wOS.isAwake) return;
     g.lcd_wake();
-    wOS.setLCDBrightness(wOS.brightLevel());
     if(!wOS.tikint) wOS.tikint = setInterval(wOS.tick, 1000);
     wOS.emit("wake");
     wOS.isAwake = true;
@@ -39,22 +37,28 @@ wOS = {
       wOS.sleep();
     }
   },
-  brightLevel: ()=> { 
-    let c=Math.floor(Date().getHours()/3);
-    return [0.1,0.5,0.7,1.0][c > 3 ? 7-c : c]; 
-  },
-  setLCDBrightness: (lvl)=>{analogWrite(wOS.BKL, 1.0-lvl);},
 };
 
 wOS.BUZ.reset(); // in case we go nuts on start up
 wOS.isLCDOn = ()=>{return wOS.isAwake;}
 
-if (_S.read("driver.js")) eval(_S.read("driver.js"));
+SPI1.setup({sck: D28, mosi: D30, baud: 2000000});
+opts = {
+  cs: D29, //dummy
+  dc: D27,
+  rst: D31,
+  width: 200,
+  height: 200,
+};
+g=require("~IL3829.js").connect(SPI1, opts);
+g.lcd_sleep = ()=>{};
+g.lcd_wake = ()=>{};
+
+//if (_S.read("driver.js")) eval(_S.read("driver.js"));
 //if (_S.read("~SC7A20.js")) eval(_S.read("~SC7A20.js"));
 //ACCEL.on("faceup", wOS.wake);
 
 setWatch(()=>{wOS.buzz();}, wOS.CHG, {"edge":"both", "repeat":true});
-Bangle = wOS;
 wOS.UI = {};
 logD = ()=>{};
 
@@ -64,9 +68,11 @@ E.getBattery = () => {
   let pct = Math.floor((analogRead(wOS.BAT) - batLo) * 100 / (batHi-batLo));
   return (pct > 100) ? 100 : pct;
 };
+setWatch(()=>{wOS.uptime = getTime();}, wOS.CHG, {edge: "both", repeat: true});
 setInterval(()=>{
   NRF.setAdvertising({
-    0x180F : [E.getBattery()] // Service data 0x180F = 95
+    0x180F : [E.getBattery()]}, // Service data 0x180F = 95
+    {name: "BT100X "+NRF.getAddress().slice(-5)
   });
 }, 300000);
 wOS.setStepCount = (n) => {};
