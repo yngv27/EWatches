@@ -1,4 +1,4 @@
-This is a fairly rare watch, it now seems gone from Aliexpress (https://www.aliexpress.com/item/1005003230390620.html?spm=a2g0o.order_list.0.0.4c321802S26tb9). 
+This is a fairly rare watch,
 It is an NRF52840 with the usual smart watch sensors (accelerometer, touchscreen, heart rate sensor) PLUS a thermometer and GPS. 
 
 Here's the (Espruino) pinouts I know:
