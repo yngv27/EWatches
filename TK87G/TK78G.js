@@ -9,12 +9,11 @@ wOS = {
   BUZ: D20,
   CHG: D40,
   BAT: D3,
-  buzz: (ms) => {  
-    if(ms == undefined) ms = 200;
-    analogWrite(wOS.BUZ, 0.5); setTimeout(()=>{wOS.BUZ.reset();}, ms);
-  },
-  isCharging: ()=>{return !(wOS.CHG.read());},
   BKL: D8,
+//  buzz: (ms) => {      if(ms == undefined) ms = 200;    analogWrite(wOS.BUZ, 0.5); setTimeout(()=>{wOS.BUZ.reset();}, ms); },
+  buzz: (ms) => { if(wOS.isAwake) return; wOS.BKL.reset(); wOS.BUZ.set(); setTimeout(()=>{wOS.BUZ.reset();}, ms?ms:100);  },
+ 
+  isCharging: ()=>{return !(wOS.CHG.read());},
   sleep: ()=> {
       g.lcd_sleep();
       TC.stop();
@@ -71,7 +70,7 @@ setTimeout( ()=>{
 
 //if (_S.read("~SC7A20.js")) eval(_S.read("~SC7A20.js"));
 
-setWatch(()=>{wOS.buzz();}, wOS.CHG, {"edge":"both", "repeat":true});
+setWatch(()=>{wOS.buzz(); wOS.uptime=getTime();}, wOS.CHG, {"edge":"both", "repeat":true});
 Bangle = wOS;
 wOS.UI = {};
 logD = ()=>{};
@@ -82,6 +81,7 @@ E.getBattery = () => {
   let pct = Math.floor((analogRead(wOS.BAT) - batLo) * 100 / (batHi-batLo));
   return (pct > 100) ? 100 : pct;
 };
+setWatch(()=>{wOS.uptime = getTime();}, wOS.CHG, {edge: "both", repeat: true});
 
 setInterval(()=>{
   NRF.setAdvertising({

@@ -24,8 +24,8 @@ info = {
  #'default_console_rx' : "D8",
  #'default_console_baudrate' : "9600",
  'variables' : 14000, # How many variables are allocated for Espruino to use. RAM will be overflowed if this number is too high and code won't compile.
- 'bootloader' : 1,
- 'binary_name' : 'espruino_%v_tk78g.hex',
+ #'bootloader' : 1,
+ 'binary_name' : 'e.%v.tk78g.hex',
  'build' : {
    'optimizeflags' : '-Os',
    'libraries' : [
@@ -71,16 +71,26 @@ chip = {
   'adc' : 1,
   'dac' : 0,
   'saved_code' : {
-    'address' : ((0xf8 - fstorage_pages - save_code_pages) * 4096), # Bootloader at 0xF8000
     'page_size' : 4096,
-    'pages' : save_code_pages,
+    #'address' : ((0xf8 - fstorage_pages - save_code_pages) * 4096), # Bootloader at 0xF8000
+    #'pages' : save_code_pages,
     'flash_available' : 1024 - ((0x26 + (0x100-0xf8) + fstorage_pages + save_code_pages)*4), # Softdevice uses 38 pages of flash (0x26000/0x100), bootloader 0x100-0xe0=0x20, FS 2, code 96. Each page is 4 kb.
+    'address' : 0x60000000, # put this in external spiflash (see below)
+    'pages' : 2048, # Entire 8MB of external flash
   },
 };
 
 devices = {
   'BTN1' : { 'pin' : 'D46', 'inverted' : True }, #, 'pinstate' : 'IN_PULLDOWN' }, # Pin negated in software
   'BTN2' : { 'pin' : 'D24', 'inverted' : True }, #, 'pinstate' : 'IN_PULLDOWN' }, # Pin negated in software
+    'SPIFLASH' : {
+            'pin_sck' : 'D19',
+            'pin_mosi' : 'D23',
+            'pin_miso' : 'D21',
+            'pin_cs' : 'D18',
+            'size' : 8192*1024, # 4MB
+            'memmap_base' : 0x60000000 # map into the address space (in software)
+  }
 };
 
 # left-right, or top-bottom order
@@ -95,8 +105,8 @@ def get_pins():
   #pinutils.findpin(pins, "PD6", True)["functions"]["TXD"]=0;
   #pinutils.findpin(pins, "PD7", True)["functions"]["CTS"]=0;
   #pinutils.findpin(pins, "PD8", True)["functions"]["RXD"]=0;
-  pinutils.findpin(pins, "PD9", True)["functions"]["NFC1"]=0;
-  pinutils.findpin(pins, "PD10", True)["functions"]["NFC2"]=0;
+  #pinutils.findpin(pins, "PD9", True)["functions"]["NFC1"]=0;
+  #pinutils.findpin(pins, "PD10", True)["functions"]["NFC2"]=0;
   pinutils.findpin(pins, "PD2", True)["functions"]["ADC1_IN0"]=0;
   pinutils.findpin(pins, "PD3", True)["functions"]["ADC1_IN1"]=0;
   pinutils.findpin(pins, "PD4", True)["functions"]["ADC1_IN2"]=0;
