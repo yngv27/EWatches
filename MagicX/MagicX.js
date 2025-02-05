@@ -30,11 +30,12 @@ g = require("~SSD1681.js").connect({spi: spi1, cs: 0, dc: D28, rst: D14, width: 
   g.flip();
   
 });
-
+// BTN1 needs a pulldown
+pinMode(BTN1, "input_pulldown");
 
 //if (_S.read("~SC7A20.js")) eval(_S.read("~SC7A20.js"));
 
-setWatch(()=>{wOS.buzz();}, wOS.CHG, {"edge":"both", "repeat":true});
+setWatch(()=>{wOS.buzz(); wOS.uptime=getTime();}, wOS.CHG, {"edge":"both", "repeat":true});
 Bangle = wOS;
 wOS.UI = {};
 logD = ()=>{};
@@ -107,7 +108,7 @@ const btnUp = (b) => {
     logD(`lpto=${BUTTON.tapTO}`);
   }
   BUTTON.lastUp = b.time;
-  setWatch(btnDown, BTN1, BUTTON.downOpts);
+  setWatch(btnDown, BTN1, BUTTON.dnOpts);
 };
 
-setWatch(btnDown, BTN1, BUTTON.downOpts);
+setWatch(btnDown, BTN1, BUTTON.dnOpts);

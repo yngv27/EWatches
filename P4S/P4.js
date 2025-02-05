@@ -1,4 +1,5 @@
 
+E.debug = ()=>{};
 wOS = {
     BUZ: D16,
     CHG: D19,
@@ -71,8 +72,12 @@ g.clear = function(rst) {
 
 //shared I2C for accel/touch
 I2C1.setup({scl:D7,sda:D6,bitrate:200000});
+// stubs
+ACCEL = { init: ()=>{} ,};
+TC = {start: E.debug, stop: E.debug}
+/*
 if (_S.list().includes("~SC7A20.js")) ACCEL=require("~SC7A20.js").connect({i2c: I2C1}); //, intr: D8});
-if (_S.list().includes("~CSTx16.js")) TC = require("~CSTx16.js").connect({i2c: I2C1, rst: D10, intr: D28}); //P4S
+//if (_S.list().includes("~CSTx16.js")) TC = require("~CSTx16.js").connect({i2c: I2C1, rst: D10, intr: D28}); //P4S
 ACCEL.init();
 ACCEL.isFaceUp = false;
 // poll
@@ -99,9 +104,8 @@ setInterval(()=> {
 ACCEL.on("faceup", wOS.wake);
 
 //setWatch(()=>{wOS.buzz();}, wOS.CHG, {"edge":"both", "repeat":true});
-Bangle = wOS;
+//Bangle = wOS;
 wOS.UI = {};
-logD = ()=>{};
 
 
 // battery is D31, lo = 0.37, high = 0.47
@@ -132,60 +136,60 @@ setInterval(()=>{  // advertise battery level every 5 min
 // MANAGE EVENTS
 BTTN=D13;
 let BUTTON = {
-lastUp: 0,
-longpressTO: 0,
-tapTO: 0,
-longTime: 1000,
-tapTime: 250,
-dbltap: false,
-watchUp: false,
-upOpts: { repeat:false, edge:'falling', debounce:25},
-downOpts: { repeat:false, edge:'rising', debounce:25},
+  lastUp: 0,
+  longpressTO: 0,
+  tapTO: 0,
+  longTime: 1000,
+  tapTime: 250,
+  dbltap: false,
+  watchUp: false,
+  upOpts: { repeat:false, edge:'falling', debounce:25},
+  dnOpts: { repeat:false, edge:'rising', debounce:25},
 };
 
 const btnDown = (b) => {
-//longpress = b.time;
-if(BUTTON.tapTO) {
-    clearTimeout(BUTTON.tapTO);
-    BUTTON.tapTO = 0;
-    BUTTON.dbltap = true;
-}
-BUTTON.longpressTO = setTimeout(function(){
-    // long press behaviour
-    //BUTTON.emit('longpress');
-    wOS.UI.emit('longpress');
-    BUTTON.longpressTO = 0;
-    // ignore button up
-    BUTTON.watchUp = false;
-}, BUTTON.longTime);
-logD(`lpto=${BUTTON.longpressTO}`);
-BUTTON.watchUp = true;
-setWatch(btnUp, BTTN, BUTTON.upOpts);
+  //longpress = b.time;
+  if(BUTTON.tapTO) {
+      clearTimeout(BUTTON.tapTO);
+      BUTTON.tapTO = 0;
+      BUTTON.dbltap = true;
+  }
+  BUTTON.longpressTO = setTimeout(function(){
+      // long press behaviour
+      //BUTTON.emit('longpress');
+      wOS.UI.emit('longpress');
+      BUTTON.longpressTO = 0;
+      // ignore button up
+      BUTTON.watchUp = false;
+  }, BUTTON.longTime);
+  E.debug(`lpto=${BUTTON.longpressTO}`);
+  BUTTON.watchUp = true;
+  setWatch(btnUp, BTTN, BUTTON.upOpts);
 };
 
 const btnUp = (b) => {
-if(BUTTON.longpressTO) {
-    clearTimeout(BUTTON.longpressTO);
-    BUTTON.longpressTO = 0;
-} 
-if(BUTTON.dbltap) {
-    //BUTTON.emit('dbltap');
-    wOS.UI.emit('dbltap');
-    BUTTON.dbltap = false;
-} else if (BUTTON.watchUp) {
-    BUTTON.tapTO = setTimeout(function(){
-    // long press behaviour
-    //BUTTON.emit('tap');
-    wOS.UI.emit('tap');
-    BUTTON.tapTO = 0;
-    BUTTON.dbltap = false;
-    }, BUTTON.tapTime);
-    logD(`lpto=${BUTTON.tapTO}`);
-}
-BUTTON.lastUp = b.time;
-setWatch(btnDown, BTTN, BUTTON.downOpts);
+  if(BUTTON.longpressTO) {
+      clearTimeout(BUTTON.longpressTO);
+      BUTTON.longpressTO = 0;
+  } 
+  if(BUTTON.dbltap) {
+      //BUTTON.emit('dbltap');
+      wOS.UI.emit('dbltap');
+      BUTTON.dbltap = false;
+  } else if (BUTTON.watchUp) {
+      BUTTON.tapTO = setTimeout(function(){
+      // long press behaviour
+      //BUTTON.emit('tap');
+      wOS.UI.emit('tap');
+      BUTTON.tapTO = 0;
+      BUTTON.dbltap = false;
+      }, BUTTON.tapTime);
+      E.debug(`lpto=${BUTTON.tapTO}`);
+  }
+  BUTTON.lastUp = b.time;
+  setWatch(btnDown, BTTN, BUTTON.dnOpts);
 };
 
-setWatch(btnDown, BTTN, BUTTON.downOpts);
+setWatch(btnDown, BTTN, BUTTON.dnOpts);
 //*/
   

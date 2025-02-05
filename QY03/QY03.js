@@ -61,7 +61,7 @@ wOS = {
 wOS.BUZ.set(); // in case we go nuts on start up
 
 setWatch(()=>{wOS.buzz();}, wOS.CHG, {"edge":"both", "repeat":true});
-Bangle = wOS;
+//Bangle = wOS;
 wOS.UI = {};
 logD = ()=>{};
 
@@ -94,7 +94,7 @@ ACCEL.on('faceup',() => {
 });
 */
 //*
-const BTTN=D4;
+
 // MANAGE EVENTS
 let BUTTON = {
   lastUp: 0,
@@ -104,12 +104,13 @@ let BUTTON = {
   tapTime: 250,
   dbltap: false,
   watchUp: false,
-  upOpts: { repeat:false, edge:'rising', debounce:25},
-  downOpts: { repeat:false, edge:'falling', debounce:25},
+  upOpts: { repeat:false, edge:'falling', debounce:25},
+  dnOpts: { repeat:false, edge:'rising', debounce:25},
 };
   
 const btnDown = (b) => {
   //longpress = b.time;
+  logD("bntDown");
   if(BUTTON.tapTO) {
     clearTimeout(BUTTON.tapTO);
     BUTTON.tapTO = 0;
@@ -125,10 +126,11 @@ const btnDown = (b) => {
   }, BUTTON.longTime);
   logD(`lpto=${BUTTON.longpressTO}`);
   BUTTON.watchUp = true;
-  setWatch(btnUp, BTTN, BUTTON.upOpts);
+  setWatch(btnUp, BTN1, BUTTON.upOpts);
 };
 
 const btnUp = (b) => {
+  logD("bntUp");
   if(BUTTON.longpressTO) {
     clearTimeout(BUTTON.longpressTO);
     BUTTON.longpressTO = 0;
@@ -148,8 +150,8 @@ const btnUp = (b) => {
     logD(`lpto=${BUTTON.tapTO}`);
   }
   BUTTON.lastUp = b.time;
-  setWatch(btnDown, BTTN, BUTTON.downOpts);
+  setWatch(btnDown, BTN1, BUTTON.dnOpts);
 };
 
-setWatch(btnDown, BTTN, BUTTON.downOpts);
+setWatch(btnDown, BTN1, BUTTON.dnOpts);
 //*/
