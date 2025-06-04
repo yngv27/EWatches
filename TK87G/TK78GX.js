@@ -51,9 +51,10 @@ wOS.BUZ.reset(); // in case we go nuts on start up
 
 let spi1 = new SPI();
 spi1.setup({sck: D36, mosi: D34, baud: 2000000});
-g = require("~IL3829.js").connect({spi:spi1, cs: D4, dc: D33, rst: D35, width: 200, height: 200});
+g = require("~SSD1681.js").connect({spi:spi1, cs: D4, dc: D33, rst: D35, width: 200, height: 200});
 setTimeout( ()=>{
   g.setBgColor(1).setColor(0);
+  g.setRotation(2,1);
   g.clear(); 
   g.lcd_wake = ()=>{};
   g.lcd_sleep = g.lcd_wake;
@@ -68,7 +69,7 @@ wOS.UI = {};
 
 // battery is D3, hi=0.23 lo=0.20
 E.getBattery = () => {
-  let batLo = 0.20 , batHi = 0.23;
+  let batLo = 0.18 , batHi = 0.23;
   let pct = Math.floor((analogRead(wOS.BAT) - batLo) * 100 / (batHi-batLo));
   return (pct > 100) ? 100 : pct;
 };
@@ -89,6 +90,7 @@ ACCEL.init();
 ACCEL.on("faceup", wOS.wake);
 TC = {start: ()=>{}, stop: ()=>{}};
 
+//DIE = require("~BTN.js").init(BTN1);
 
 // MANAGE EVENTS
 let BUTTON = {

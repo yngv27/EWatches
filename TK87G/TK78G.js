@@ -75,9 +75,9 @@ Bangle = wOS;
 wOS.UI = {};
 logD = ()=>{};
 
-// battery is D3, hi=0.23 lo=0.20
+// battery is D3, hi=0.23 lo=0.18
 E.getBattery = () => {
-  let batLo = 0.20 , batHi = 0.23;
+  let batLo = 0.18 , batHi = 0.23;
   let pct = Math.floor((analogRead(wOS.BAT) - batLo) * 100 / (batHi-batLo));
   return (pct > 100) ? 100 : pct;
 };

@@ -21,7 +21,7 @@ E.at = (timeStr, func) => {
   let delay = Math.floor((new Date(timeStr)).getTime() - (new Date()).getTime());
   if (delay < 0) delay += 24*60*60*1000;
   print("thats in "+delay/1000);
-  setTimeout(func, delay);
+  return(setTimeout(func, delay));
 };
 
 eval(_S.read("QY03X.js"));
