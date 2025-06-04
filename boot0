@@ -23,8 +23,19 @@ E.at = (timeStr, func) => {
   let delay = Math.floor((new Date(timeStr)).getTime() - (new Date()).getTime());
   if (delay < 0) delay += 24*60*60*1000;
   //print("thats in "+delay/1000);
-  setTimeout(func, delay);
+  return(setTimeout(func, delay))
 };
 
+if(typeof(Graphics) == "function") {
+  Graphics.prototype.rotatePoly = (pArr, a, xoff, yoff) => {
+    let newArr = [];
+    //let a = angle;// * pRad;
+    for(let i=0; i<pArr.length ; i+= 2) {
+      newArr[i] = Math.round(xoff + Math.cos(a)*pArr[i] + Math.sin(a)*pArr[i+1]);
+      newArr[i+1] =  Math.round(yoff + Math.sin(a)*pArr[i] - Math.cos(a)*pArr[i+1]);
+    }
+    return newArr;
+  };
+}
 
 eval(_S.read(process.env.BOARD+".js"));
