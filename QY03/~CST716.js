@@ -1,5 +1,5 @@
-//TC.init(wOS.I2C, { "RESET": D10, "INTPIN": D28});
-// touch driver CST716
+
+// touch driver CST716 for QY03
 
 const C = {
     DOWN:1, UP:2, LEFT:3, RIGHT:4, CLICK:5, LONG:12,  
@@ -42,7 +42,7 @@ const C = {
     var p = this.getXY();
         if (p.b && !this.down) {
             this.fx = p.x; this.fy = p.y; this.down = true;
-            wOS.time_left = wOS.ON_TIME; //reset LCD on time.
+            //wOS.time_left = wOS.ON_TIME; //reset LCD on time.
         }
         if (!p.b && this.down) {
             var ax = Math.abs(p.x-this.fx); 
@@ -89,7 +89,8 @@ const C = {
    console.log("long touch");
   });
   }
-  
-  var TC = exports.connect({i2c: I2C1, rst: D39, intr: D32});
   */
+  I2C1.setup({sda: D15, scl:D14, bitrate:200000})
+  var TC = exports.connect({i2c: I2C1, rst: D39, intr: D32});
+  
   
