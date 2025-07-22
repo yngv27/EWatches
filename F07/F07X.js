@@ -1,6 +1,6 @@
 global.wOS = {
-  BAT: D13,
-  LVL: D5,
+  CHG: D13,
+  BAT: D5,
   BUZ: D25,
   BKL: D11,
   ON_TIME: 10,
@@ -15,7 +15,7 @@ global.wOS = {
     analogWrite(wOS.BUZ,0.4);
     setTimeout(()=>{wOS.BUZ.reset();},100);
   },
-  isCharging:()=>{return wOS.BAT.read();},
+  isCharging:()=>{return wOS.CHG.read();},
 
 
   setLCDTimeout:(v)=>{wOS.ON_TIME=v<5?5:v;},
@@ -73,10 +73,9 @@ setWatch(()=>{
   if(!wOS.isAwake) wOS.wake();
   wOS.buzz();
   wOS.emit("charging",wOS.isCharging());
-},wOS.BAT,{edge:"both",repeat:true,debounce:500});
+},wOS.CHG,{edge:"both",repeat:true,debounce:500});
 
  
-//AC = require("~KX022.js").init({i2c:wOS.i2c, intpin:D1});
 eval(_S.read("~BMA222.js"));
 ACCEL.init();
 
@@ -86,13 +85,11 @@ D8.set();
 // and D28 is our new button
 pinMode(D28, "input_pullup");
 
-SPI1.setup({ sck:D7, mosi:D6, order: "lsb", baud: 4000000 });
-var g = require("~MEMLCD.js").connect(SPI1, D2/*SCS*/, 0/*EXTCOMIN*/, 144/*width*/, 168/*height*/);
-g.setRotation(2).setBgColor(1).setColor(0).clear(); 
+eval(_S.read("~ST7571.js"));
 
 E.getBattery = function (){
   let l=3.5,h=4.19;
-  let v=4.20/0.18*analogRead(wOS.LVL);
+  let v=4.20/0.18*analogRead(wOS.BAT);
   if(v>=h)return 100;
   if(v<=l)return 0;
   return Math.floor(100*(v-l)/(h-l));

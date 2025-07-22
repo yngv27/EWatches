@@ -74,7 +74,7 @@ setWatch(()=>{
   g.wake();
   analogWrite(D30, 0.0125); 
   clock();
-  setTimeout(()=>{g.sleep();D30.reset();}, 6500);
+  setTimeout(()=>{g.clear().flip();g.sleep();D30.reset();}, 6500);
 }, BTN2, {edge:"rising", repeat:true});
 
 g.setFont("6x8r");
